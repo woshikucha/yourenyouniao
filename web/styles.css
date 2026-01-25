@@ -1,0 +1,401 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* 开屏页样式 */
+.splash-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.splash-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.splash-countdown {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.splash-skip {
+    padding: 1px 2px;
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 2px;
+}
+
+.splash-timer {
+    padding: 1px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 2px;
+}
+
+/* 主页样式 */
+.home-container {
+    padding: 0;
+    background-color: #000;
+}
+
+.banner-container {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-slider {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.banner-slide {
+    min-width: 100%;
+    height: 200px;
+    position: relative;
+    cursor: pointer;
+}
+
+.banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-title {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.banner-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 4px;
+}
+
+.banner-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+}
+
+.banner-dot.active {
+    width: 12px;
+    height: 12px;
+    background: #fff;
+}
+
+.notification-bar {
+    width: 100%;
+    height: 40px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    overflow: hidden;
+}
+
+.notification-text {
+    color: #fff;
+    font-size: 14px;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* 导航菜单样式 */
+.navigation-container {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    background: #111;
+    padding: 12px 16px;
+    gap: 12px;
+    scrollbar-width: none;
+}
+
+.navigation-container::-webkit-scrollbar {
+    display: none;
+}
+
+.navigation-item {
+    padding: 8px 16px;
+    background: #222;
+    color: #fff;
+    border-radius: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.navigation-item:hover {
+    background: #333;
+}
+
+.navigation-item:active {
+    background: #444;
+}
+
+.ad-container {
+    width: 100%;
+    height: 300px;
+    background: #000;
+    overflow: hidden;
+}
+
+.ad-webview {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.module-section {
+    padding: 16px 0;
+    background: #000;
+}
+
+.module-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    padding: 0 16px 8px;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 0 16px;
+}
+
+.movie-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.movie-poster {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #1a1a1a;
+}
+
+.movie-title {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 播放页样式 */
+.player-container {
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-video {
+    width: 100%;
+    height: 60vh;
+    background: #000;
+}
+
+.player-info {
+    padding: 16px;
+    background: #111;
+}
+
+.player-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.player-type {
+    font-size: 14px;
+    color: #888;
+}
+
+.player-back {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.player-back:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+/* 加载动画 */
+.loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: 16px;
+    color: #fff;
+    font-size: 14px;
+}
+
+/* 隐藏类 */
+.hidden {
+    display: none !important;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .banner-container {
+        height: 180px;
+    }
+    
+    .banner-slide {
+        height: 180px;
+    }
+    
+    .movie-grid {
+        gap: 10px;
+    }
+    
+    .module-title {
+        font-size: 16px;
+    }
+}
+
+/* 翻页样式 */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 16px;
+}
+
+.pagination-btn {
+    padding: 10px 20px;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #333;
+}
+
+.pagination-btn:active:not(:disabled) {
+    background: #444;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-info {
+    color: #fff;
+    font-size: 14px;
+}
+
+/* 频道页样式 */
+.channel-container {
+    padding: 16px;
+    background: #000;
+    min-height: 100vh;
+}
+
+.channel-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    padding: 0 0 16px;
+}
