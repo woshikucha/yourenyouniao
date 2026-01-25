@@ -33,7 +33,7 @@ function loadChannelData() {
     showLoading();
     
     // 先加载首页数据
-    fetch(`${apiUrl}`)
+    fetch(`${apiUrl}/home_data.json`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -45,17 +45,14 @@ function loadChannelData() {
             
             // 根据channel_id找到对应的导航项
             const navigationItem = homeData.navigation_menu.find(item => item.channel_key === currentChannelId);
-            if (!navigationItem || !navigationItem.api_endpoint) {
-                throw new Error('找不到频道API地址');
+            if (!navigationItem) {
+                throw new Error('找不到频道');
             }
             
-            currentChannelApiUrl = navigationItem.api_endpoint;
-            console.log('频道API地址:', currentChannelApiUrl);
-            
-            // 加载频道数据（使用CORS代理）
-            const proxiedUrl = getCorsProxyUrl(currentChannelApiUrl);
-            console.log('代理后的频道API地址:', proxiedUrl);
-            return fetch(proxiedUrl).then(response => response.json());
+            // 本地测试：使用本地channel文件
+            const localChannelUrl = `${apiUrl}/channel_${currentChannelId}.json`;
+            console.log('频道API地址:', localChannelUrl);
+            return fetch(localChannelUrl).then(response => response.json());
         })
         .then(channelDataResult => {
             channelData = channelDataResult;
@@ -76,21 +73,11 @@ function loadChannelData() {
 
 // 获取API基础URL
 function getApiUrl() {
-    const apiUrl = localStorage.getItem('api_url') || 'https://pastebin.com/raw/wHzzja05';
-    
-    // 检查是否是pastebin的URL，如果是则使用CORS代理
-    if (apiUrl.includes('pastebin.com/raw/')) {
-        return `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-    }
-    
-    return apiUrl;
+    return localStorage.getItem('api_url') || '../assets';
 }
 
 // 获取带CORS代理的URL
 function getCorsProxyUrl(url) {
-    if (url.includes('pastebin.com/raw/')) {
-        return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    }
     return url;
 }
 
@@ -114,7 +101,7 @@ function renderChannel() {
     if (channelData && channelData.items && channelData.items.length > 0) {
         movieGrid.innerHTML = channelData.items.map(movie => `
             <div class="movie-card" onclick="openPlayer('${movie.id}', '${encodeURIComponent(movie.title)}', '${movie.type || ''}', '${encodeURIComponent(movie.poster)}', '${encodeURIComponent(movie.video_url)}')">
-                <img class="movie-poster" src="${movie.poster}" alt="${movie.title}">
+                <img class="movie-poster" src="${movie.poster}" alt="${movie.title}" loading="lazy">
                 <div class="movie-title">${movie.title}</div>
             </div>
         `).join('');
@@ -155,13 +142,18 @@ function loadChannelAd(container) {
     if (adKey && homeData[adKey] && homeData[adKey].enabled) {
         adData = homeData[adKey];
         container.innerHTML = `
-            <iframe class="ad-webview" 
-                    srcdoc="${createAdHTML(adData)}" 
-                    scrolling="no" 
-                    frameborder="0">
-            </iframe>
+            <div class="ad-placeholder">广告加载中...</div>
         `;
-        container.classList.remove('hidden');
+        
+        setTimeout(() => {
+            container.innerHTML = `
+                <iframe class="ad-webview" 
+                        srcdoc="${createAdHTML(adData)}" 
+                        scrolling="no" 
+                        frameborder="0">
+                </iframe>
+            `;
+        }, 300);
     } else {
         container.classList.add('hidden');
     }
@@ -197,22 +189,19 @@ function nextPage() {
 
 // 加载指定页的数据
 function loadChannelPage() {
-    if (!currentChannelApiUrl) {
-        showError('频道API地址未设置');
+    if (!currentChannelId) {
+        showError('频道ID未设置');
         return;
     }
     
     showLoading();
     
-    // 构建带页码的URL
-    const pageUrl = `${currentChannelApiUrl}?page=${currentPage}`;
+    // 本地测试：使用本地channel文件
+    const apiUrl = getApiUrl();
+    const pageUrl = `${apiUrl}/channel_${currentChannelId}.json`;
     console.log('加载页面:', pageUrl);
     
-    // 使用CORS代理
-    const proxiedUrl = getCorsProxyUrl(pageUrl);
-    console.log('代理后的页面URL:', proxiedUrl);
-    
-    fetch(proxiedUrl)
+    fetch(pageUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

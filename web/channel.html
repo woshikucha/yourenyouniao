@@ -7,28 +7,30 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- 加载动画 -->
-    <div id="loading-container" class="loading-container">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">加载中...</div>
-    </div>
+    <div class="main-wrapper">
+        <!-- 加载动画 -->
+        <div id="loading-container" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">加载中...</div>
+        </div>
 
-    <!-- 频道页容器 -->
-    <div id="channel-container" class="channel-container hidden">
-        <!-- 频道标题 -->
-        <div id="channel-title" class="channel-title"></div>
-        
-        <!-- 频道广告 -->
-        <div id="channel-ad-container" class="ad-container hidden"></div>
-        
-        <!-- 电影网格 -->
-        <div id="movie-grid" class="movie-grid"></div>
-        
-        <!-- 翻页控制 -->
-        <div id="pagination-container" class="pagination-container hidden">
-            <button id="btn-prev-page" class="pagination-btn" onclick="prevPage()">上一页</button>
-            <span id="page-info" class="page-info"></span>
-            <button id="btn-next-page" class="pagination-btn" onclick="nextPage()">下一页</button>
+        <!-- 频道页容器 -->
+        <div id="channel-container" class="channel-container hidden">
+            <!-- 频道标题 -->
+            <div id="channel-title" class="channel-title"></div>
+            
+            <!-- 频道广告 -->
+            <div id="channel-ad-container" class="ad-container hidden"></div>
+            
+            <!-- 电影网格 -->
+            <div id="movie-grid" class="movie-grid"></div>
+            
+            <!-- 翻页控制 -->
+            <div id="pagination-container" class="pagination-container hidden">
+                <button id="btn-prev-page" class="pagination-btn" onclick="prevPage()">上一页</button>
+                <span id="page-info" class="page-info"></span>
+                <button id="btn-next-page" class="pagination-btn" onclick="nextPage()">下一页</button>
+            </div>
         </div>
     </div>
 

@@ -30,7 +30,7 @@ function initPlayer() {
 function loadHomeData() {
     const apiUrl = getApiUrl();
     
-    fetch(apiUrl)
+    fetch(`${apiUrl}/home_data.json`)
         .then(response => response.json())
         .then(data => {
             homeData = data;
@@ -44,14 +44,7 @@ function loadHomeData() {
 
 // 获取API基础URL
 function getApiUrl() {
-    const apiUrl = localStorage.getItem('api_url') || 'https://pastebin.com/raw/wHzzja05';
-    
-    // 检查是否是pastebin的URL，如果是则使用CORS代理
-    if (apiUrl.includes('pastebin.com/raw/')) {
-        return `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-    }
-    
-    return apiUrl;
+    return localStorage.getItem('api_url') || '../assets';
 }
 
 // 渲染播放器
@@ -69,28 +62,57 @@ function renderPlayer() {
     playerTitle.textContent = currentMovie.title;
     playerType.textContent = currentMovie.type || '';
     
-    playerVideo.innerHTML = `
-        <video id="video-player" controls style="width:100%;height:100%;background:#000;">
-            <source src="${currentMovie.video_url}" type="video/mp4">
-        </video>
-    `;
+    const videoUrl = currentMovie.video_url;
+    const isHls = videoUrl.includes('.m3u8') || videoUrl.includes('m3u8');
     
-    // 加载播放页广告
-    if (homeData && homeData.player_ad && homeData.player_ad.enabled) {
-        const adData = homeData.player_ad;
-        playerAdContainer.innerHTML = `
-            <div class="ad-container">
-                <iframe class="ad-webview" 
-                        srcdoc="${createAdHTML(adData)}" 
-                        scrolling="no" 
-                        frameborder="0">
-                </iframe>
-            </div>
+    if (isHls && Hls.isSupported()) {
+        playerVideo.innerHTML = `
+            <video id="video-player" controls style="width:100%;height:100%;background:#000;"></video>
         `;
-        playerAdContainer.classList.remove('hidden');
+        
+        setTimeout(() => {
+            const video = document.getElementById('video-player');
+            if (video) {
+                const hls = new Hls();
+                hls.loadSource(videoUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play();
+                });
+            }
+        }, 100);
+    } else if (isHls) {
+        playerVideo.innerHTML = `
+            <video id="video-player" controls style="width:100%;height:100%;background:#000;">
+                <source src="${videoUrl}" type="application/x-mpegURL">
+            </video>
+        `;
     } else {
-        playerAdContainer.classList.add('hidden');
+        playerVideo.innerHTML = `
+            <video id="video-player" controls style="width:100%;height:100%;background:#000;">
+                <source src="${videoUrl}" type="video/mp4">
+            </video>
+        `;
     }
+    
+    // 延迟加载播放页广告
+    setTimeout(() => {
+        if (homeData && homeData.player_ad && homeData.player_ad.enabled) {
+            const adData = homeData.player_ad;
+            playerAdContainer.innerHTML = `
+                <div class="ad-container">
+                    <iframe class="ad-webview" 
+                            srcdoc="${createAdHTML(adData)}" 
+                            scrolling="no" 
+                            frameborder="0">
+                    </iframe>
+                </div>
+            `;
+            playerAdContainer.classList.remove('hidden');
+        } else {
+            playerAdContainer.classList.add('hidden');
+        }
+    }, 300);
 }
 
 // 创建广告HTML

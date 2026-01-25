@@ -7,39 +7,32 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- 加载动画 -->
-    <div id="loading-container" class="loading-container">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">加载中...</div>
-    </div>
-
-    <!-- 开屏广告 -->
-    <div id="splash-container" class="splash-container hidden">
-        <img id="splash-image" class="splash-image" src="bg_splash.jpg" alt="开屏广告">
-        <div class="splash-countdown">
-            <span id="splash-skip" class="splash-skip">跳过 </span>
-            <span id="splash-countdown-text" class="splash-timer">5</span>
-        </div>
-    </div>
-
-    <!-- 主页容器 -->
-    <div id="home-container" class="home-container hidden">
-        <!-- 轮播图 -->
-        <div id="banner-container" class="banner-container">
-            <div id="banner-slider" class="banner-slider"></div>
-            <div id="banner-indicator" class="banner-indicator"></div>
+    <div class="main-wrapper">
+        <!-- 加载动画 -->
+        <div id="loading-container" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">加载中...</div>
         </div>
 
-        <!-- 导航菜单 -->
-        <div id="navigation-container" class="navigation-container"></div>
+        <!-- 主页容器 -->
+        <div id="home-container" class="home-container hidden">
+            <!-- 轮播图 -->
+            <div id="banner-container" class="banner-container">
+                <div id="banner-slider" class="banner-slider"></div>
+                <div id="banner-indicator" class="banner-indicator"></div>
+            </div>
 
-        <!-- 通知栏 -->
-        <div id="notification-bar" class="notification-bar hidden">
-            <div id="notification-text" class="notification-text"></div>
+            <!-- 导航菜单 -->
+            <div id="navigation-container" class="navigation-container"></div>
+
+            <!-- 通知栏 -->
+            <div id="notification-bar" class="notification-bar hidden">
+                <div id="notification-text" class="notification-text"></div>
+            </div>
+
+            <!-- 推荐模块 -->
+            <div id="modules-container"></div>
         </div>
-
-        <!-- 推荐模块 -->
-        <div id="modules-container"></div>
     </div>
 
     <script src="app.js"></script>

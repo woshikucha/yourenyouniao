@@ -2,8 +2,6 @@
 let homeData = null;
 let currentBannerIndex = 0;
 let bannerTimer = null;
-let splashTimer = null;
-let splashCountdown = 5;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -19,14 +17,7 @@ function initApp() {
 
 // 获取API基础URL
 function getApiUrl() {
-    const apiUrl = localStorage.getItem('api_url') || 'https://pastebin.com/raw/wHzzja05';
-    
-    // 检查是否是pastebin的URL，如果是则使用CORS代理
-    if (apiUrl.includes('pastebin.com/raw/')) {
-        return `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-    }
-    
-    return apiUrl;
+    return localStorage.getItem('api_url') || '../assets';
 }
 
 // 加载首页数据
@@ -37,87 +28,33 @@ function loadHomeData() {
     fetch(apiUrl)
         .then(response => {
             console.log('收到响应，状态:', response.status);
+            console.log('Content-Type:', response.headers.get('Content-Type'));
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            return response.text();
         })
-        .then(data => {
-            console.log('数据加载成功:', data);
-            homeData = data;
-            checkSplashAd();
+        .then(text => {
+            console.log('响应文本长度:', text.length);
+            console.log('响应文本前100字符:', text.substring(0, 100));
+            try {
+                const data = JSON.parse(text);
+                console.log('数据加载成功:', data);
+                homeData = data;
+                hideLoading();
+                showHome();
+            } catch (e) {
+                console.error('JSON解析失败:', e);
+                console.error('完整响应:', text);
+                hideLoading();
+                showHome();
+            }
         })
         .catch(error => {
             console.error('加载数据失败:', error);
             hideLoading();
             showHome();
         });
-}
-
-// 检查并显示开屏广告
-function checkSplashAd() {
-    console.log('检查开屏广告，homeData:', homeData);
-    if (homeData && homeData.splash_ad && homeData.splash_ad.enabled) {
-        console.log('开屏广告已启用');
-        showSplashAd();
-    } else {
-        console.log('开屏广告未启用，直接显示主页');
-        hideLoading();
-        showHome();
-    }
-}
-
-// 显示开屏广告
-function showSplashAd() {
-    console.log('显示开屏广告');
-    const splashContainer = document.getElementById('splash-container');
-    const splashImage = document.getElementById('splash-image');
-    const splashCountdownText = document.getElementById('splash-countdown-text');
-    const splashSkip = document.getElementById('splash-skip');
-    
-    splashContainer.classList.remove('hidden');
-    
-    const splashAd = homeData.splash_ad;
-    console.log('开屏广告配置:', splashAd);
-    
-    if (splashAd.ad_format === 'image' && splashAd.image_url) {
-        splashImage.src = splashAd.image_url;
-    } else {
-        splashImage.src = 'bg_splash.jpg';
-    }
-    
-    splashCountdown = splashAd.duration || 5;
-    splashCountdownText.textContent = splashCountdown;
-    console.log('倒计时开始:', splashCountdown, '秒');
-    
-    splashSkip.addEventListener('click', closeSplashAd);
-    splashImage.addEventListener('click', function() {
-        if (splashAd.link_url) {
-            window.open(splashAd.link_url, '_blank');
-        }
-    });
-    
-    splashTimer = setInterval(() => {
-        splashCountdown--;
-        splashCountdownText.textContent = splashCountdown;
-        
-        if (splashCountdown <= 0) {
-            closeSplashAd();
-        }
-    }, 1000);
-}
-
-// 关闭开屏广告
-function closeSplashAd() {
-    if (splashTimer) {
-        clearInterval(splashTimer);
-    }
-    
-    const splashContainer = document.getElementById('splash-container');
-    splashContainer.classList.add('hidden');
-    
-    hideLoading();
-    showHome();
 }
 
 // 显示主页
@@ -172,7 +109,7 @@ function renderBanner() {
         const slideDiv = document.createElement('div');
         slideDiv.className = 'banner-slide';
         slideDiv.innerHTML = `
-            <img class="banner-image" src="${slide.poster}" alt="${slide.title}">
+            <img class="banner-image" src="${slide.poster}" alt="${slide.title}" loading="lazy">
             <div class="banner-title">${slide.title}</div>
         `;
         slideDiv.addEventListener('click', () => openPlayer(slide));
@@ -265,12 +202,8 @@ function renderModules() {
         if (adKey && homeData[adKey] && homeData[adKey].enabled) {
             const adData = homeData[adKey];
             adHTML = `
-                <div class="ad-container">
-                    <iframe class="ad-webview" 
-                            srcdoc="${createAdHTML(adData)}" 
-                            scrolling="no" 
-                            frameborder="0">
-                    </iframe>
+                <div class="ad-container ad-lazy" data-ad-key="${adKey}">
+                    <div class="ad-placeholder">广告加载中...</div>
                 </div>
             `;
         }
@@ -281,7 +214,7 @@ function renderModules() {
                 <div class="movie-grid">
                     ${module.movies.map(movie => `
                         <div class="movie-card" onclick="openPlayer(${JSON.stringify(movie).replace(/"/g, '&quot;')})">
-                            <img class="movie-poster" src="${movie.poster}" alt="${movie.title}">
+                            <img class="movie-poster" src="${movie.poster}" alt="${movie.title}" loading="lazy">
                             <div class="movie-title">${movie.title}</div>
                         </div>
                     `).join('')}
@@ -296,6 +229,42 @@ function renderModules() {
         `;
         
         modulesContainer.appendChild(moduleDiv);
+    });
+    
+    // 延迟加载广告
+    setTimeout(loadLazyAds, 500);
+}
+
+// 懒加载广告
+function loadLazyAds() {
+    const adContainers = document.querySelectorAll('.ad-lazy');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const container = entry.target;
+                const adKey = container.getAttribute('data-ad-key');
+                
+                if (!container.classList.contains('ad-loaded') && homeData[adKey]) {
+                    container.classList.add('ad-loaded');
+                    const adData = homeData[adKey];
+                    container.innerHTML = `
+                        <iframe class="ad-webview" 
+                                srcdoc="${createAdHTML(adData)}" 
+                                scrolling="no" 
+                                frameborder="0">
+                        </iframe>
+                    `;
+                }
+            }
+        });
+    }, {
+        rootMargin: '100px',
+        threshold: 0.1
+    });
+    
+    adContainers.forEach(container => {
+        observer.observe(container);
     });
 }
 
