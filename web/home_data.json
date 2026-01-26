@@ -1,0 +1,271 @@
+{
+  "banner_slides": [
+    {
+      "image": "https://via.placeholder.com/800x400/333/fff?text=Banner+1",
+      "title": "推荐视频1",
+      "video_url": "https://example.com/video1.m3u8",
+      "video_type": "m3u8"
+    },
+    {
+      "image": "https://via.placeholder.com/800x400/444/fff?text=Banner+2",
+      "title": "推荐视频2",
+      "video_url": "https://example.com/video2.m3u8",
+      "video_type": "m3u8"
+    }
+  ],
+  "navigation_menu": [
+    {
+      "name": "首页",
+      "channel_key": "home"
+    },
+    {
+      "name": "电影",
+      "channel_key": "channel1"
+    },
+    {
+      "name": "电视剧",
+      "channel_key": "channel2"
+    },
+    {
+      "name": "综艺",
+      "channel_key": "channel3"
+    }
+  ],
+  "notification": {
+    "enabled": false,
+    "text": ""
+  },
+  "sections": [
+    {
+      "name": "热门推荐",
+      "movies": [
+        {
+          "id": "1",
+          "title": "电影1",
+          "poster": "https://via.placeholder.com/300x200/555/fff?text=Movie+1",
+          "video_url": "https://example.com/video1.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "2",
+          "title": "电影2",
+          "poster": "https://via.placeholder.com/300x200/666/fff?text=Movie+2",
+          "video_url": "https://example.com/video2.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "3",
+          "title": "电影3",
+          "poster": "https://via.placeholder.com/300x200/777/fff?text=Movie+3",
+          "video_url": "https://example.com/video3.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "4",
+          "title": "电影4",
+          "poster": "https://via.placeholder.com/300x200/888/fff?text=Movie+4",
+          "video_url": "https://example.com/video4.m3u8",
+          "video_type": "m3u8"
+        }
+      ]
+    },
+    {
+      "name": "最新上线",
+      "movies": [
+        {
+          "id": "5",
+          "title": "电影5",
+          "poster": "https://via.placeholder.com/300x200/999/fff?text=Movie+5",
+          "video_url": "https://example.com/video5.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "6",
+          "title": "电影6",
+          "poster": "https://via.placeholder.com/300x200/aaa/fff?text=Movie+6",
+          "video_url": "https://example.com/video6.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "7",
+          "title": "电影7",
+          "poster": "https://via.placeholder.com/300x200/bbb/fff?text=Movie+7",
+          "video_url": "https://example.com/video7.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "8",
+          "title": "电影8",
+          "poster": "https://via.placeholder.com/300x200/ccc/fff?text=Movie+8",
+          "video_url": "https://example.com/video8.m3u8",
+          "video_type": "m3u8"
+        }
+      ]
+    },
+    {
+      "name": "精选内容",
+      "movies": [
+        {
+          "id": "9",
+          "title": "电影9",
+          "poster": "https://via.placeholder.com/300x200/ddd/fff?text=Movie+9",
+          "video_url": "https://example.com/video9.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "10",
+          "title": "电影10",
+          "poster": "https://via.placeholder.com/300x200/eee/fff?text=Movie+10",
+          "video_url": "https://example.com/video10.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "11",
+          "title": "电影11",
+          "poster": "https://via.placeholder.com/300x200/fff/000?text=Movie+11",
+          "video_url": "https://example.com/video11.m3u8",
+          "video_type": "m3u8"
+        },
+        {
+          "id": "12",
+          "title": "电影12",
+          "poster": "https://via.placeholder.com/300x200/111/fff?text=Movie+12",
+          "video_url": "https://example.com/video12.m3u8",
+          "video_type": "m3u8"
+        }
+      ]
+    }
+  ],
+  "ad1": {
+    "enabled": true,
+    "ad_format": "iframe",
+    "ad_link": "https://example.com/ad1",
+    "ad_content": "<div style='width:100%;height:100px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:bold;'>广告位1</div>"
+  },
+  "ad2": {
+    "enabled": true,
+    "ad_format": "iframe",
+    "ad_link": "https://example.com/ad2",
+    "ad_content": "<div style='width:100%;height:100px;background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:bold;'>广告位2</div>"
+  },
+  "ad3": {
+    "enabled": true,
+    "ad_format": "iframe",
+    "ad_link": "https://example.com/ad3",
+    "ad_content": "<div style='width:100%;height:100px;background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:bold;'>广告位3</div>"
+  },
+  "player_ad": {
+    "enabled": true,
+    "ad_format": "iframe",
+    "ad_link": "https://example.com/player-ad",
+    "ad_content": "<div style='width:100%;height:100px;background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:bold;'>播放器广告</div>"
+  },
+  "channel1": {
+    "name": "电影",
+    "page": 1,
+    "totalPages": 5,
+    "pageSize": 20,
+    "movies": [
+      {
+        "id": "c1-1",
+        "title": "电影频道1",
+        "poster": "https://via.placeholder.com/300x200/222/fff?text=Channel1-1",
+        "video_url": "https://example.com/c1-1.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c1-2",
+        "title": "电影频道2",
+        "poster": "https://via.placeholder.com/300x200/333/fff?text=Channel1-2",
+        "video_url": "https://example.com/c1-2.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c1-3",
+        "title": "电影频道3",
+        "poster": "https://via.placeholder.com/300x200/444/fff?text=Channel1-3",
+        "video_url": "https://example.com/c1-3.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c1-4",
+        "title": "电影频道4",
+        "poster": "https://via.placeholder.com/300x200/555/fff?text=Channel1-4",
+        "video_url": "https://example.com/c1-4.m3u8",
+        "video_type": "m3u8"
+      }
+    ]
+  },
+  "channel2": {
+    "name": "电视剧",
+    "page": 1,
+    "totalPages": 3,
+    "pageSize": 20,
+    "movies": [
+      {
+        "id": "c2-1",
+        "title": "电视剧频道1",
+        "poster": "https://via.placeholder.com/300x200/666/fff?text=Channel2-1",
+        "video_url": "https://example.com/c2-1.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c2-2",
+        "title": "电视剧频道2",
+        "poster": "https://via.placeholder.com/300x200/777/fff?text=Channel2-2",
+        "video_url": "https://example.com/c2-2.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c2-3",
+        "title": "电视剧频道3",
+        "poster": "https://via.placeholder.com/300x200/888/fff?text=Channel2-3",
+        "video_url": "https://example.com/c2-3.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c2-4",
+        "title": "电视剧频道4",
+        "poster": "https://via.placeholder.com/300x200/999/fff?text=Channel2-4",
+        "video_url": "https://example.com/c2-4.m3u8",
+        "video_type": "m3u8"
+      }
+    ]
+  },
+  "channel3": {
+    "name": "综艺",
+    "page": 1,
+    "totalPages": 2,
+    "pageSize": 20,
+    "movies": [
+      {
+        "id": "c3-1",
+        "title": "综艺频道1",
+        "poster": "https://via.placeholder.com/300x200/aaa/fff?text=Channel3-1",
+        "video_url": "https://example.com/c3-1.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c3-2",
+        "title": "综艺频道2",
+        "poster": "https://via.placeholder.com/300x200/bbb/fff?text=Channel3-2",
+        "video_url": "https://example.com/c3-2.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c3-3",
+        "title": "综艺频道3",
+        "poster": "https://via.placeholder.com/300x200/ccc/fff?text=Channel3-3",
+        "video_url": "https://example.com/c3-3.m3u8",
+        "video_type": "m3u8"
+      },
+      {
+        "id": "c3-4",
+        "title": "综艺频道4",
+        "poster": "https://via.placeholder.com/300x200/ddd/fff?text=Channel3-4",
+        "video_url": "https://example.com/c3-4.m3u8",
+        "video_type": "m3u8"
+      }
+    ]
+  }
+}

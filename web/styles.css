@@ -16,8 +16,7 @@ body {
 
 .main-wrapper {
     width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
+    max-width: 100%;
     background-color: #000;
 }
 
@@ -31,25 +30,30 @@ body {
 .home-container {
     padding: 0;
     background-color: #000;
+    width: 100%;
+    max-width: 100%;
 }
 
 .banner-container {
     width: 100%;
-    height: 240px;
+    height: 200px;
     position: relative;
     overflow: hidden;
+    max-width: 100%;
 }
 
 .banner-slider {
     display: flex;
     transition: transform 0.3s ease;
+    width: 100%;
 }
 
 .banner-slide {
     min-width: 100%;
-    height: 240px;
+    height: 200px;
     position: relative;
     cursor: pointer;
+    width: 100%;
 }
 
 .banner-image {
@@ -115,6 +119,7 @@ body {
 /* 导航菜单样式 */
 .navigation-container {
     width: 100%;
+    max-width: 100%;
     display: flex;
     flex-wrap: wrap;
     overflow-x: auto;
@@ -164,6 +169,8 @@ body {
 .module-section {
     padding: 16px 0;
     background: #000;
+    width: 100%;
+    max-width: 100%;
 }
 
 .module-title {
@@ -175,9 +182,11 @@ body {
 
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 12px;
     padding: 0 16px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .movie-card {

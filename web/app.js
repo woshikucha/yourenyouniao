@@ -15,9 +15,21 @@ function initApp() {
     loadHomeData();
 }
 
-// 获取API基础URL
+// 获取API基础URL - 带代理轮换
 function getApiUrl() {
-    return 'https://api.allorigins.win/raw?url=https://pastebin.com/raw/wHzzja05';
+    // 本地测试：优先使用本地JSON文件
+    return 'home_data.json';
+    
+    // 远程API（取消注释使用）
+    /*
+    const proxies = [
+        'https://api.allorigins.win/raw?url=',
+        'https://corsproxy.io/?',
+        'https://thingproxy.freeboard.io/fetch/'
+    ];
+    const proxy = proxies[Math.floor(Math.random() * proxies.length)];
+    return proxy + 'https://pastebin.com/raw/wHzzja05';
+    */
 }
 
 // 加载首页数据
@@ -184,13 +196,18 @@ function renderNotificationBar() {
 function renderModules() {
     const modulesContainer = document.getElementById('modules-container');
     
+    console.log('Rendering modules, homeData:', homeData);
+    
     if (!homeData || !homeData.sections || homeData.sections.length === 0) {
+        console.log('No sections to render');
         return;
     }
     
     modulesContainer.innerHTML = '';
     
     homeData.sections.forEach((module, index) => {
+        console.log('Rendering module:', module.name, 'index:', index);
+        
         const moduleDiv = document.createElement('div');
         moduleDiv.className = 'module-section';
         
@@ -198,18 +215,24 @@ function renderModules() {
         const ads = ['ad1', 'ad2', 'ad3'];
         const adKey = ads[index];
         
+        console.log('Ad key for module:', adKey, 'Ad data:', homeData[adKey]);
+        
         let adHTML = '';
         if (adKey && homeData[adKey] && homeData[adKey].enabled) {
             const adData = homeData[adKey];
+            console.log('Ad enabled:', adKey, 'Ad format:', adData.ad_format);
             adHTML = `
                 <div class="ad-container ad-lazy" data-ad-key="${adKey}">
                     <div class="ad-placeholder">广告加载中...</div>
                 </div>
             `;
+        } else {
+            console.log('Ad not enabled or missing:', adKey);
         }
         
         let moviesHTML = '';
         if (module.movies && module.movies.length > 0) {
+            console.log('Module has', module.movies.length, 'movies');
             moviesHTML = `
                 <div class="movie-grid">
                     ${module.movies.map(movie => `
@@ -220,6 +243,8 @@ function renderModules() {
                     `).join('')}
                 </div>
             `;
+        } else {
+            console.log('Module has no movies');
         }
         
         moduleDiv.innerHTML = `
@@ -230,6 +255,8 @@ function renderModules() {
         
         modulesContainer.appendChild(moduleDiv);
     });
+    
+    console.log('Total modules rendered:', homeData.sections.length);
     
     // 延迟加载广告
     setTimeout(loadLazyAds, 500);

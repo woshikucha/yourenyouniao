@@ -30,9 +30,12 @@ function initChannel() {
 function loadChannelData() {
     const apiUrl = getApiUrl();
     
+    console.log('开始加载频道数据，频道ID:', currentChannelId);
+    console.log('API地址:', apiUrl);
+    
     showLoading();
     
-    // 先加载首页数据
+    // 加载首页数据
     fetch(apiUrl)
         .then(response => {
             console.log('收到响应，状态:', response.status);
@@ -46,19 +49,12 @@ function loadChannelData() {
             try {
                 const homeDataResult = JSON.parse(text);
                 homeData = homeDataResult;
-                console.log('Home data loaded:', homeData);
+                console.log('Home data loaded, keys:', Object.keys(homeData));
                 
-                // 根据channel_id找到对应的导航项
-                const navigationItem = homeData.navigation_menu.find(item => item.channel_key === currentChannelId);
-                if (!navigationItem) {
-                    console.log('找不到频道:', currentChannelId);
-                    throw new Error('找不到频道');
-                }
-                
-                // 从home_data中获取频道数据（如果有的话）
+                // 检查频道数据是否存在
                 if (homeData[currentChannelId]) {
                     channelData = homeData[currentChannelId];
-                    console.log('Channel data from home_data:', channelData);
+                    console.log('Channel data found in home_data:', channelData);
                     currentPage = channelData.page || 1;
                     totalPages = channelData.totalPages || 1;
                     pageSize = channelData.pageSize || 20;
@@ -66,31 +62,12 @@ function loadChannelData() {
                     renderChannel();
                     hideLoading();
                 } else {
-                    // 尝试加载独立的channel文件
-                    const localChannelUrl = `${apiUrl}/channel_${currentChannelId}.json`;
-                    console.log('频道API地址:', localChannelUrl);
-                    return fetch(localChannelUrl).then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    });
+                    console.log('Channel data not found in home_data, available keys:', Object.keys(homeData));
+                    throw new Error('找不到频道数据');
                 }
             } catch (e) {
                 console.error('JSON解析失败:', e);
                 throw new Error('数据解析失败');
-            }
-        })
-        .then(channelDataResult => {
-            if (channelDataResult) {
-                channelData = channelDataResult;
-                console.log('Channel data loaded:', channelData);
-                currentPage = channelData.page || 1;
-                totalPages = channelData.totalPages || 1;
-                pageSize = channelData.pageSize || 20;
-                
-                renderChannel();
-                hideLoading();
             }
         })
         .catch(error => {
@@ -102,7 +79,13 @@ function loadChannelData() {
 
 // 获取API基础URL
 function getApiUrl() {
+    // 本地测试：优先使用本地JSON文件
+    return 'home_data.json';
+    
+    // 远程API（取消注释使用）
+    /*
     return 'https://api.allorigins.win/raw?url=https://pastebin.com/raw/wHzzja05';
+    */
 }
 
 // 获取带CORS代理的URL
