@@ -17,7 +17,7 @@ function initApp() {
 
 // 获取API基础URL
 function getApiUrl() {
-    return 'https://corsproxy.io/?https://pastebin.com/raw/wHzzja05';
+    return 'https://api.allorigins.win/raw?url=https://pastebin.com/raw/wHzzja05';
 }
 
 // 加载首页数据
