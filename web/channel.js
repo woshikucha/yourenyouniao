@@ -73,7 +73,7 @@ function loadChannelData() {
 
 // 获取API基础URL
 function getApiUrl() {
-    return 'https://pastebin.com/raw/wHzzja05';
+    return 'https://corsproxy.io/?https://pastebin.com/raw/wHzzja05';
 }
 
 // 获取带CORS代理的URL
