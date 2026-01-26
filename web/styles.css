@@ -16,7 +16,8 @@ body {
 
 .main-wrapper {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;
+    margin: 0 auto;
     background-color: #000;
 }
 
@@ -324,6 +325,10 @@ body {
 
 /* 响应式 */
 @media (max-width: 768px) {
+    .main-wrapper {
+        max-width: 100%;
+    }
+    
     .banner-container {
         height: 180px;
     }
@@ -365,13 +370,33 @@ body {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
+    .main-wrapper {
+        max-width: 100%;
+    }
+    
     .movie-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 1025px) and (max-width: 1400px) {
+    .main-wrapper {
+        max-width: 100%;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (min-width: 1401px) {
+    .main-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
     .movie-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 12px;

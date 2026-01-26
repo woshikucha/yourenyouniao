@@ -17,7 +17,7 @@ function initApp() {
 
 // 获取API基础URL
 function getApiUrl() {
-    return localStorage.getItem('api_url') || '../assets';
+    return 'https://pastebin.com/raw/wHzzja05';
 }
 
 // 加载首页数据

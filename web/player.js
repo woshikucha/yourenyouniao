@@ -44,7 +44,7 @@ function loadHomeData() {
 
 // 获取API基础URL
 function getApiUrl() {
-    return localStorage.getItem('api_url') || '../assets';
+    return 'https://pastebin.com/raw/wHzzja05';
 }
 
 // 渲染播放器
@@ -65,7 +65,7 @@ function renderPlayer() {
     const videoUrl = currentMovie.video_url;
     const isHls = videoUrl.includes('.m3u8') || videoUrl.includes('m3u8');
     
-    if (isHls && Hls.isSupported()) {
+    if (isHls && typeof Hls !== 'undefined' && Hls.isSupported()) {
         playerVideo.innerHTML = `
             <video id="video-player" controls style="width:100%;height:100%;background:#000;"></video>
         `;
