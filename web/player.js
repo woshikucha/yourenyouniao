@@ -97,8 +97,10 @@ function renderPlayer() {
     
     // 延迟加载播放页广告
     setTimeout(() => {
+        console.log('Loading player ad...');
         if (homeData && homeData.player_ad && homeData.player_ad.enabled) {
             const adData = homeData.player_ad;
+            console.log('Player ad data:', adData);
             playerAdContainer.innerHTML = `
                 <div class="ad-container">
                     <iframe class="ad-webview" 
@@ -109,7 +111,9 @@ function renderPlayer() {
                 </div>
             `;
             playerAdContainer.classList.remove('hidden');
+            console.log('Player ad loaded');
         } else {
+            console.log('Player ad not enabled or no data');
             playerAdContainer.classList.add('hidden');
         }
     }, 300);

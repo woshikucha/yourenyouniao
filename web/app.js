@@ -245,9 +245,12 @@ function loadLazyAds() {
                 const container = entry.target;
                 const adKey = container.getAttribute('data-ad-key');
                 
+                console.log('Loading ad:', adKey);
+                
                 if (!container.classList.contains('ad-loaded') && homeData[adKey]) {
                     container.classList.add('ad-loaded');
                     const adData = homeData[adKey];
+                    console.log('Ad data:', adData);
                     container.innerHTML = `
                         <iframe class="ad-webview" 
                                 srcdoc="${createAdHTML(adData)}" 
@@ -355,3 +358,11 @@ document.addEventListener('visibilitychange', () => {
         }
     }
 });
+
+// 关闭悬浮下载按钮
+function closeFloatingDownload() {
+    const floatingDownload = document.getElementById('floating-download');
+    if (floatingDownload) {
+        floatingDownload.style.display = 'none';
+    }
+}

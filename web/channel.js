@@ -33,36 +33,65 @@ function loadChannelData() {
     showLoading();
     
     // 先加载首页数据
-    fetch(`${apiUrl}/home_data.json`)
+    fetch(apiUrl)
         .then(response => {
+            console.log('收到响应，状态:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            return response.text();
         })
-        .then(homeDataResult => {
-            homeData = homeDataResult;
-            
-            // 根据channel_id找到对应的导航项
-            const navigationItem = homeData.navigation_menu.find(item => item.channel_key === currentChannelId);
-            if (!navigationItem) {
-                throw new Error('找不到频道');
+        .then(text => {
+            console.log('响应文本长度:', text.length);
+            try {
+                const homeDataResult = JSON.parse(text);
+                homeData = homeDataResult;
+                console.log('Home data loaded:', homeData);
+                
+                // 根据channel_id找到对应的导航项
+                const navigationItem = homeData.navigation_menu.find(item => item.channel_key === currentChannelId);
+                if (!navigationItem) {
+                    console.log('找不到频道:', currentChannelId);
+                    throw new Error('找不到频道');
+                }
+                
+                // 从home_data中获取频道数据（如果有的话）
+                if (homeData[currentChannelId]) {
+                    channelData = homeData[currentChannelId];
+                    console.log('Channel data from home_data:', channelData);
+                    currentPage = channelData.page || 1;
+                    totalPages = channelData.totalPages || 1;
+                    pageSize = channelData.pageSize || 20;
+                    
+                    renderChannel();
+                    hideLoading();
+                } else {
+                    // 尝试加载独立的channel文件
+                    const localChannelUrl = `${apiUrl}/channel_${currentChannelId}.json`;
+                    console.log('频道API地址:', localChannelUrl);
+                    return fetch(localChannelUrl).then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    });
+                }
+            } catch (e) {
+                console.error('JSON解析失败:', e);
+                throw new Error('数据解析失败');
             }
-            
-            // 本地测试：使用本地channel文件
-            const localChannelUrl = `${apiUrl}/channel_${currentChannelId}.json`;
-            console.log('频道API地址:', localChannelUrl);
-            return fetch(localChannelUrl).then(response => response.json());
         })
         .then(channelDataResult => {
-            channelData = channelDataResult;
-            
-            currentPage = channelData.page || 1;
-            totalPages = channelData.totalPages || 1;
-            pageSize = channelData.pageSize || 20;
-            
-            renderChannel();
-            hideLoading();
+            if (channelDataResult) {
+                channelData = channelDataResult;
+                console.log('Channel data loaded:', channelData);
+                currentPage = channelData.page || 1;
+                totalPages = channelData.totalPages || 1;
+                pageSize = channelData.pageSize || 20;
+                
+                renderChannel();
+                hideLoading();
+            }
         })
         .catch(error => {
             console.error('加载数据失败:', error);
@@ -127,7 +156,10 @@ function renderChannel() {
 
 // 加载频道广告
 function loadChannelAd(container) {
+    console.log('Loading channel ad...');
+    
     if (!homeData) {
+        console.log('No home data available');
         return;
     }
     
@@ -139,8 +171,11 @@ function loadChannelAd(container) {
     const ads = ['ad1', 'ad2', 'ad3'];
     const adKey = ads[channelIndex % 3];
     
+    console.log('Channel ID:', currentChannelId, 'Ad key:', adKey);
+    
     if (adKey && homeData[adKey] && homeData[adKey].enabled) {
         adData = homeData[adKey];
+        console.log('Channel ad data:', adData);
         container.innerHTML = `
             <div class="ad-placeholder">广告加载中...</div>
         `;
@@ -153,8 +188,10 @@ function loadChannelAd(container) {
                         frameborder="0">
                 </iframe>
             `;
+            console.log('Channel ad loaded');
         }, 300);
     } else {
+        console.log('Channel ad not enabled or no data');
         container.classList.add('hidden');
     }
 }
