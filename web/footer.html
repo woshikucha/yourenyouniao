@@ -1,0 +1,55 @@
+<!-- 页脚 -->
+<footer>
+    <div class="container">
+        <div class="copyright">
+            <p>&copy; 2026 优酷 youku.com 版权所有 | 网络视听许可证: 0101234号 | 增值电信业务经营许可证: 京B2-20250000号</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+    /* 页脚样式 */
+    footer {
+        background-color: #111;
+        padding: 40px 0 15px;
+        margin-top: auto;
+        width: 100%;
+    }
+    
+    .copyright {
+        text-align: center;
+        color: #666;
+        padding-top: 15px;
+        border-top: 1px solid #333;
+        font-size: 12px;
+    }
+    
+    /* 响应式设计 - 页脚 */
+    /* 小屏幕 (768px - 991px) */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .container {
+            max-width: 768px;
+            padding: 0 12px;
+        }
+    }
+    
+    /* 移动端 (576px - 767px) */
+    @media (min-width: 576px) and (max-width: 767px) {
+        .container {
+            max-width: 576px;
+            padding: 0 10px;
+        }
+    }
+    
+    /* 超小屏幕 (< 576px) */
+    @media (max-width: 575px) {
+        .container {
+            width: 100%;
+            padding: 0 8px;
+        }
+        
+        .copyright {
+            font-size: 10px;
+        }
+    }
+</style>

@@ -3,48 +3,1270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>视频应用</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>有人有鸟-每日更新永久免费</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式重置 - 确保无横向滚动条 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* 防止横向滚动 */
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul, ol {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 头部导航样式 */
+        header {
+            background-color: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            width: 100%;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5f00;
+            margin-right: 20px;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            font-size: 15px;
+            padding: 6px 0;
+            position: relative;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: #ff5f00;
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #ff5f00;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #222;
+            border-radius: 20px;
+            padding: 6px 12px;
+            min-width: 0;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 0 8px;
+            width: 100%;
+            min-width: 0;
+            max-width: 180px;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .search-box button {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        /* PC端布局 */
+        .main-content {
+            padding: 25px 0;
+            width: 100%;
+        }
+        
+        .content-area {
+            width: 100%;
+        }
+        
+        /* 轮播图样式 - 3:2比例 */
+        .carousel {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9比例，更常见 */
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 25px;
+            background-color: #111;
+        }
+        
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+        
+        .slide-title {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        
+        .slide-desc {
+            color: #ccc;
+            max-width: 70%;
+            font-size: 14px;
+        }
+        
+        .carousel-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .carousel-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .carousel-btn.active {
+            background-color: #ff5f00;
+        }
+        
+        /* 跑马灯通知 */
+        .marquee-container {
+            background-color: #111;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .marquee-label {
+            background-color: #ff5f00;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 12px;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        
+        .marquee-text {
+            overflow: hidden;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+            padding-left: 100%;
+            font-size: 14px;
+        }
+        
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        /* 推荐模块样式 - 响应式网格 */
+        .recommend-section {
+            margin-bottom: 35px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .section-more {
+            color: #aaa;
+            font-size: 13px;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .section-more:hover {
+            color: #ff5f00;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        
+        .video-item {
+            background-color: #181818;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 95, 0, 0.2);
+        }
+        
+        /* 视频缩略图保持3:2比例 */
+        .video-thumb-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9比例 */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .video-info {
+            padding: 12px;
+        }
+        
+        .video-title {
+            font-size: 14px;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #111;
+            padding: 40px 0 15px;
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #ff5f00;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .footer-links a {
+            color: #aaa;
+            transition: color 0.3s;
+            font-size: 13px;
+        }
+        
+        .footer-links a:hover {
+            color: #ff5f00;
+        }
+        
+        .copyright {
+            text-align: center;
+            color: #666;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            font-size: 12px;
+        }
+        
+        /* =============== 响应式设计 =============== */
+        /* 超大屏幕 (> 1600px) */
+        @media (min-width: 1601px) {
+            .container {
+                max-width: 1600px;
+            }
+        }
+        
+        /* 大屏幕 (1200px - 1600px) */
+        @media (min-width: 1200px) and (max-width: 1600px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* 中等屏幕 (992px - 1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container {
+                max-width: 992px;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .sidebar {
+                width: 160px;
+            }
+        }
+        
+        /* 小屏幕 (768px - 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container {
+                max-width: 768px;
+                padding: 0 12px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                flex-wrap: nowrap;
+            }
+            
+            .sidebar-menu a {
+                white-space: nowrap;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .nav-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+            
+            .user-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+        
+        /* 移动端 (576px - 767px) */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .container {
+                max-width: 576px;
+                padding: 0 10px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .sidebar-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                flex-wrap: nowrap;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .nav-container {
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 8px;
+                gap: 12px;
+            }
+            
+            .user-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-box {
+                flex: 1;
+                max-width: 300px;
+            }
+            
+            .carousel {
+                padding-bottom: 56.25%;
+            }
+            
+            .slide-title {
+                font-size: 18px;
+            }
+            
+            .slide-desc {
+                font-size: 12px;
+                max-width: 100%;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
+        }
+        
+        /* 超小屏幕 (< 576px) */
+        @media (max-width: 575px) {
+            .container {
+                width: 100%;
+                padding: 0 8px;
+            }
+            
+            .main-content {
+                padding: 15px 0;
+            }
+            
+            /* 移动端：每行最多两组数据 */
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 8px 0;
+            }
+            
+            .logo {
+                font-size: 20px;
+                margin-right: 0;
+            }
+            
+            .nav-container {
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 6px;
+                gap: 10px;
+            }
+            
+            .nav-links a {
+                font-size: 13px;
+            }
+            
+            .user-actions {
+                width: 100%;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            
+            .search-box {
+                flex: 1;
+                max-width: 100%;
+            }
+            
+            .search-box input {
+                max-width: none;
+            }
+            
+            .carousel {
+                padding-bottom: 56.25%;
+                margin-bottom: 15px;
+            }
+            
+            .slide-title {
+                font-size: 16px;
+            }
+            
+            .slide-desc {
+                font-size: 12px;
+                max-width: 100%;
+                display: none; /* 小屏幕隐藏描述 */
+            }
+            
+            .section-title {
+                font-size: 16px;
+            }
+            
+            .section-more {
+                font-size: 12px;
+            }
+            
+            .video-info {
+                padding: 8px;
+            }
+            
+            .video-title {
+                font-size: 12px;
+            }
+            
+            .video-meta {
+                font-size: 10px;
+            }
+        }
+        
+        /* 极窄屏幕 (< 400px) */
+        @media (max-width: 400px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links a {
+                font-size: 12px;
+            }
+            
+            .search-box input {
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <!-- 加载动画 -->
-        <div id="loading-container" class="loading-container">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">加载中...</div>
-        </div>
+    <!-- 引入头部导航 -->
+    <div id="header-placeholder"></div>
 
-        <!-- 主页容器 -->
-        <div id="home-container" class="home-container hidden">
-            <!-- 轮播图 -->
-            <div id="banner-container" class="banner-container">
-                <div id="banner-slider" class="banner-slider"></div>
-                <div id="banner-indicator" class="banner-indicator"></div>
-            </div>
-
-            <!-- 导航菜单 -->
-            <div id="navigation-container" class="navigation-container"></div>
-
-            <!-- 通知栏 -->
-            <div id="notification-bar" class="notification-bar hidden">
-                <div id="notification-text" class="notification-text"></div>
-            </div>
-
-            <!-- 推荐模块 -->
-            <div id="modules-container"></div>
-        </div>
-
-        <!-- 悬浮下载按钮 -->
-        <div id="floating-download" class="floating-download">
-            <div class="floating-close" onclick="closeFloatingDownload()">×</div>
-            <a href="https://addapp.ggff.net/"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4a2 2 0 012-2h4a2 2 0 012 2v12a2 2 0 01-2 2h-4a2 2 0 01-2-2V6a2 2 0 012-2h4a2 2 0 012 2v2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" alt="下载">
-            <div class="floating-download-text">立即下载</div></a>
+    <!-- 首页内容 -->
+    <div class="container">
+        <div class="main-content">
+            <!-- 内容区域 -->
+            <main class="content-area">
+                <!-- 轮播图 -->
+                <section class="carousel">
+                    <div class="carousel-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/1600/900?random=1');">
+                        <div class="slide-content">
+                            <h2 class="slide-title">海绵宝宝比基尼海滩新冒险</h2>
+                            <p class="slide-desc">适合7岁以上观看｜海绵宝宝比基尼海滩新冒险，最高热度破5000</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/1600/900?random=2');">
+                        <div class="slide-content">
+                            <h2 class="slide-title">以我新声，见我新生</h2>
+                            <p class="slide-desc">挖掘原创好音乐，为华语乐坛寻找下一首金曲，用音乐点燃你的耳朵！</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/1600/900?random=3');">
+                        <div class="slide-content">
+                            <h2 class="slide-title">双时空叙事，深刻揭露日军731部队暴行</h2>
+                            <p class="slide-desc">凸显中国人民坚韧的抗争精神</p>
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <div class="carousel-btn active" data-slide="0"></div>
+                        <div class="carousel-btn" data-slide="1"></div>
+                        <div class="carousel-btn" data-slide="2"></div>
+                    </div>
+                </section>
+                
+                <!-- 跑马灯通知 -->
+                <section class="marquee-container">
+                    <div class="marquee-label">通知</div>
+                    <div class="marquee-text">
+                        <div class="marquee-content">
+                            系统通知：优酷VIP会员年度盛典即将开启！年度热播剧集《算 孟扬》双时空叙事，深刻揭露日军731部队泯灭人性的暴行，凸显中国人民坚韧的抗争精神。少儿频道《汪汪队》更新至14期，适合3-9岁观看，全力守护冒险湾，最高热度破8000！
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 推荐模块1 -->
+                <section class="recommend-section">
+                    <div class="section-header">
+                        <h2 class="section-title">热门推荐</h2>
+                        <a href="channel3.html?type=热门推荐" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
+                    </div>
+                    <div class="video-grid">
+                        <!-- 视频项1 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=1">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=4" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">海绵宝宝比基尼海滩新冒险</h3>
+                                    <div class="video-meta">
+                                        <span>更新至5期</span>
+                                        <span>热度 5000+</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- 视频项2 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=2">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=5" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">以我新声，见我新生！原创音乐大赛</h3>
+                                    <div class="video-meta">
+                                        <span>更新至02-02期</span>
+                                        <span>热播中</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- 视频项3 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=3">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=6" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">汪汪队全力守护冒险湾</h3>
+                                    <div class="video-meta">
+                                        <span>更新至14期</span>
+                                        <span>热度 8000+</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- 视频项4 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=4">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=7" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">央视精品历史纪录片</h3>
+                                    <div class="video-meta">
+                                        <span>共10集</span>
+                                        <span>豆瓣9.2</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- 视频项5 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=5">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=8" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">开动！打开中国美食图鉴</h3>
+                                    <div class="video-meta">
+                                        <span>更新至8期</span>
+                                        <span>美食纪录片</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 推荐模块2 -->
+                <section class="recommend-section">
+                    <div class="section-header">
+                        <h2 class="section-title">少儿频道</h2>
+                        <a href="channel3.html?type=少儿" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
+                    </div>
+                    <div class="video-grid">
+                        <!-- 视频项6-10 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=6">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=9" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">儿童启蒙动画：认知世界</h3>
+                                    <div class="video-meta">
+                                        <span>适合3-6岁</span>
+                                        <span>共52集</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=7">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=10" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">幼儿英语启蒙儿歌</h3>
+                                    <div class="video-meta">
+                                        <span>更新至30期</span>
+                                        <span>英语学习</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=8">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=11" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">恐龙世界大冒险</h3>
+                                    <div class="video-meta">
+                                        <span>适合5-10岁</span>
+                                        <span>科普动画</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=9">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=12" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">宝宝巴士：好习惯养成</h3>
+                                    <div class="video-meta">
+                                        <span>更新至45期</span>
+                                        <span>习惯养成</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=10">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=13" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">亲子互动游戏合集</h3>
+                                    <div class="video-meta">
+                                        <span>家庭共看</span>
+                                        <span>互动教学</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 推荐模块3 -->
+                <section class="recommend-section">
+                    <div class="section-header">
+                        <h2 class="section-title">纪录片频道</h2>
+                        <a href="channel3.html?type=纪录片" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
+                    </div>
+                    <div class="video-grid">
+                        <!-- 视频项11-15 -->
+                        <div class="video-item">
+                            <a href="player3.html?id=11">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=14" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">大国工匠：传统手艺传承</h3>
+                                    <div class="video-meta">
+                                        <span>共6集</span>
+                                        <span>文化传承</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=12">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=15" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">地球脉动：极地之旅</h3>
+                                    <div class="video-meta">
+                                        <span>自然纪录片</span>
+                                        <span>BBC制作</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=13">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=16" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">舌尖上的中国：风味人间</h3>
+                                    <div class="video-meta">
+                                        <span>美食纪录片</span>
+                                        <span>第4季</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=14">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=17" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">历史谜团：未解之谜</h3>
+                                    <div class="video-meta">
+                                        <span>考古发现</span>
+                                        <span>共8集</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="video-item">
+                            <a href="player3.html?id=15">
+                                <div class="video-thumb-container">
+                                    <img src="https://picsum.photos/400/225?random=18" alt="视频封面" class="video-thumb">
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">宇宙探索：黑洞之谜</h3>
+                                    <div class="video-meta">
+                                        <span>天文科普</span>
+                                        <span>NASA合作</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
     </div>
 
-    <script src="app.js"></script>
-    <a title="Google Analytics Alternative" href="https://clicky.com/101500240"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
-<script async data-id="101500240" src="//static.getclicky.com/js"></script>
+    <!-- 引入页脚 -->
+    <div id="footer-placeholder"></div>
+    <script>
+        // 加载页脚
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
 
+    <script>
+        // 轮播图功能
+        function initCarousel(slidesData) {
+            const carousel = document.querySelector('.carousel');
+            if (!carousel || !slidesData || slidesData.length === 0) return;
+            
+            // 清空现有内容
+            carousel.innerHTML = '';
+            
+            // 创建轮播图幻灯片
+            slidesData.forEach((slide, index) => {
+                const slideElement = document.createElement('div');
+                slideElement.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+                const imageUrl = slide.poster || slide.image || '';
+                const slideTitle = slide.title || '视频标题';
+                const slideType = slide.type || '';
+                slideElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${imageUrl}')`;
+                slideElement.innerHTML = `
+                    <div class="slide-content">
+                        <h2 class="slide-title">${slideTitle}</h2>
+                        <p class="slide-desc">${slideType}</p>
+                    </div>
+                `;
+                slideElement.addEventListener('click', () => {
+                    const videoUrl = slide.video_url || '';
+                    if (videoUrl) {
+                        window.location.href = `player.html?url=${btoa(encodeURIComponent(videoUrl))}&title=${btoa(encodeURIComponent(slideTitle))}`;
+                    }
+                });
+                carousel.appendChild(slideElement);
+            });
+            
+            // 创建轮播图控制按钮
+            const controlsElement = document.createElement('div');
+            controlsElement.className = 'carousel-controls';
+            slidesData.forEach((_, index) => {
+                const btn = document.createElement('div');
+                btn.className = `carousel-btn ${index === 0 ? 'active' : ''}`;
+                btn.dataset.slide = index;
+                btn.addEventListener('click', () => showSlide(index));
+                controlsElement.appendChild(btn);
+            });
+            carousel.appendChild(controlsElement);
+            
+            // 轮播图切换功能
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.carousel-slide');
+            const btns = document.querySelectorAll('.carousel-btn');
+            
+            function showSlide(index) {
+                if (!slides[index] || !btns[index]) return;
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                    if (btns[i]) {
+                        btns[i].classList.remove('active');
+                    }
+                });
+                slides[index].classList.add('active');
+                btns[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            // 自动轮播
+            let slideInterval = setInterval(() => {
+                const nextSlide = (currentSlide + 1) % slides.length;
+                showSlide(nextSlide);
+            }, 5000);
+            
+            // 鼠标悬停暂停轮播
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            carousel.addEventListener('mouseleave', () => {
+                slideInterval = setInterval(() => {
+                    const nextSlide = (currentSlide + 1) % slides.length;
+                    showSlide(nextSlide);
+                }, 5000);
+            });
+        }
+        
+        // 更新导航菜单
+        function updateNavigationMenu(menuData) {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks && menuData && menuData.length > 0) {
+                // 清空导航链接
+                navLinks.innerHTML = '';
+                
+                // 添加首页链接
+                const homeLink = document.createElement('a');
+                homeLink.href = 'index.html';
+                homeLink.textContent = '首页';
+                homeLink.classList.add('active');
+                navLinks.appendChild(homeLink);
+                
+                // 添加新的导航链接
+                menuData.forEach(item => {
+                    if (item.name && item.channel_key) {
+                        const link = document.createElement('a');
+                        link.href = `channel.html?type=${item.channel_key}`;
+                        link.textContent = item.name;
+                        navLinks.appendChild(link);
+                    }
+                });
+            }
+        }
+        
+        // 更新通知栏
+        function updateNotificationBar(notificationData) {
+            if (notificationData && notificationData.enabled) {
+                const marqueeContent = document.querySelector('.marquee-content');
+                if (marqueeContent) {
+                    marqueeContent.textContent = notificationData.text || '';
+                }
+            }
+        }
+        
+        // 更新模块内容
+        function updateModules(sectionsData) {
+            const mainContent = document.querySelector('.content-area');
+            if (!mainContent || !sectionsData || sectionsData.length === 0) return;
+            
+            // 找到所有推荐模块
+            const recommendSections = mainContent.querySelectorAll('.recommend-section');
+            
+            sectionsData.forEach((section, index) => {
+                if (recommendSections[index]) {
+                    const sectionElement = recommendSections[index];
+                    const titleElement = sectionElement.querySelector('.section-title');
+                    const moreLink = sectionElement.querySelector('.section-more');
+                    const videoGrid = sectionElement.querySelector('.video-grid');
+                    
+                    if (titleElement) {
+                        titleElement.textContent = section.display_name || section.name || '模块名称';
+                    }
+                    if (moreLink) {
+                        moreLink.href = `channel.html?type=${section.id || section.channel_key || 'rmtj'}`;
+                    }
+                    
+                    if (videoGrid && section.movies && section.movies.length > 0) {
+                        videoGrid.innerHTML = '';
+                        section.movies.forEach(movie => {
+                            if (movie.title && movie.video_url) {
+                                const videoItem = document.createElement('div');
+                                videoItem.className = 'video-item';
+                                const posterUrl = movie.poster || '';
+                                videoItem.innerHTML = `
+                                    <a href="player.html?url=${btoa(encodeURIComponent(movie.video_url))}&title=${btoa(encodeURIComponent(movie.title))}&poster=${btoa(encodeURIComponent(posterUrl))}">
+                                        <div class="video-thumb-container"> 
+                                            <img src="${posterUrl}" alt="${movie.title}" class="video-thumb">
+                                        </div>
+                                        <div class="video-info">
+                                            <h3 class="video-title">${movie.title}</h3>
+                                        </div>
+                                    </a>
+                                `;
+                                videoGrid.appendChild(videoItem);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        
+        // 显示广告
+        function showAds(adData) {
+            // 显示播放器广告
+            if (adData && adData.player_ad && adData.player_ad.enabled && adData.player_ad.ad_format === 'script') {
+                const adContainer = document.createElement('div');
+                adContainer.className = 'ad-container';
+                adContainer.innerHTML = adData.player_ad.script_content || '';
+                document.body.appendChild(adContainer);
+            }
+        }
+        
+        // 从本地文件加载数据
+        function loadHomeData() {
+            console.log('开始加载数据...');
+            
+            // 直接从本地assets目录加载数据
+            fetch('assets/home_data.json')
+                .then(response => {
+                    console.log('本地文件响应状态:', response.status);
+                    if (!response.ok) {
+                        throw new Error('Local network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('从本地文件加载数据成功:', data);
+                    
+                    // 初始化轮播图
+                    console.log('轮播图数据:', data.banner_slides || []);
+                    initCarousel(data.banner_slides || []);
+                    
+                    // 更新导航菜单
+                    console.log('导航菜单数据:', data.navigation_menu || []);
+                    updateNavigationMenu(data.navigation_menu || []);
+                    
+                    // 更新通知栏
+                    console.log('通知栏数据:', data.notification || data.notification_bar || {});
+                    updateNotificationBar(data.notification || data.notification_bar || {});
+                    
+                    // 更新模块内容
+                    console.log('模块数据:', data.sections || []);
+                    updateModules(data.sections || []);
+                    
+                    // 显示广告
+                    showAds(data);
+                })
+                .catch(error => {
+                    console.error('从本地文件加载数据失败:', error);
+                    // 显示默认内容
+                    console.log('显示默认内容...');
+                    initCarousel([]);
+                    updateNavigationMenu([]);
+                    updateNotificationBar({});
+                    updateModules([]);
+                });
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 先加载header，然后再初始化数据
+            fetch('header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                    // 初始化轮播图和数据
+                    loadHomeData();
+                })
+                .catch(error => {
+                    console.error('加载header失败:', error);
+                    // 即使header加载失败，也尝试初始化数据
+                    loadHomeData();
+                });
+        });
+    </script>
 </body>
 </html>

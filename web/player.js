@@ -29,22 +29,85 @@ function initPlayer() {
 // 加载首页数据（获取广告配置）
 function loadHomeData() {
     const apiUrl = getApiUrl();
+    console.log('开始加载首页数据，API地址:', apiUrl);
     
-    fetch(`${apiUrl}/home_data.json`)
-        .then(response => response.json())
-        .then(data => {
+    // 添加超时处理
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8秒超时
+    
+    fetch(apiUrl, {
+        signal: controller.signal,
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
+    .then(response => {
+        clearTimeout(timeoutId);
+        console.log('收到响应，状态:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        console.log('响应文本长度:', text.length);
+        try {
+            const data = JSON.parse(text);
+            console.log('数据加载成功:', data);
             homeData = data;
             renderPlayer();
-        })
-        .catch(error => {
-            console.error('加载数据失败:', error);
-            renderPlayer();
-        });
+        } catch (e) {
+            console.error('JSON解析失败:', e);
+            console.error('完整响应:', text);
+            // 尝试使用本地备份数据
+            loadLocalBackupData();
+        }
+    })
+    .catch(error => {
+        clearTimeout(timeoutId);
+        console.error('加载数据失败:', error);
+        // 尝试使用本地备份数据
+        loadLocalBackupData();
+    });
 }
 
-// 获取API基础URL
+// 加载本地备份数据
+function loadLocalBackupData() {
+    console.log('尝试加载本地备份数据');
+    fetch('home_data.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Local backup error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        try {
+            const data = JSON.parse(text);
+            console.log('本地备份数据加载成功');
+            homeData = data;
+            renderPlayer();
+        } catch (e) {
+            console.error('本地备份数据解析失败:', e);
+            renderPlayer();
+        }
+    })
+    .catch(error => {
+        console.error('加载本地备份数据失败:', error);
+        renderPlayer();
+    });
+}
+
+// 获取API基础URL - 直接访问（适合服务器部署）
 function getApiUrl() {
-    return 'https://api.allorigins.win/raw?url=https://pastebin.com/raw/wHzzja05';
+    // 直接访问远程API（无代理）
+    return 'https://pastebin.com/raw/wHzzja05';
+    
+    // 本地测试（取消注释使用）
+    /*
+    return 'home_data.json';
+    */
 }
 
 // 渲染播放器

@@ -35,56 +35,112 @@ function loadChannelData() {
     
     showLoading();
     
+    // 添加超时处理
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+    
     // 加载首页数据
-    fetch(apiUrl)
-        .then(response => {
-            console.log('收到响应，状态:', response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(text => {
-            console.log('响应文本长度:', text.length);
-            try {
-                const homeDataResult = JSON.parse(text);
-                homeData = homeDataResult;
-                console.log('Home data loaded, keys:', Object.keys(homeData));
+    fetch(apiUrl, {
+        signal: controller.signal,
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
+    .then(response => {
+        clearTimeout(timeoutId);
+        console.log('收到响应，状态:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        console.log('响应文本长度:', text.length);
+        try {
+            const homeDataResult = JSON.parse(text);
+            homeData = homeDataResult;
+            console.log('Home data loaded, keys:', Object.keys(homeData));
+            
+            // 检查频道数据是否存在
+            if (homeData[currentChannelId]) {
+                channelData = homeData[currentChannelId];
+                console.log('Channel data found in home_data:', channelData);
+                currentPage = channelData.page || 1;
+                totalPages = channelData.totalPages || 1;
+                pageSize = channelData.pageSize || 20;
                 
-                // 检查频道数据是否存在
-                if (homeData[currentChannelId]) {
-                    channelData = homeData[currentChannelId];
-                    console.log('Channel data found in home_data:', channelData);
-                    currentPage = channelData.page || 1;
-                    totalPages = channelData.totalPages || 1;
-                    pageSize = channelData.pageSize || 20;
-                    
-                    renderChannel();
-                    hideLoading();
-                } else {
-                    console.log('Channel data not found in home_data, available keys:', Object.keys(homeData));
-                    throw new Error('找不到频道数据');
-                }
-            } catch (e) {
-                console.error('JSON解析失败:', e);
-                throw new Error('数据解析失败');
+                renderChannel();
+                hideLoading();
+            } else {
+                console.log('Channel data not found in home_data, available keys:', Object.keys(homeData));
+                throw new Error('找不到频道数据');
             }
-        })
-        .catch(error => {
-            console.error('加载数据失败:', error);
-            hideLoading();
-            showError('加载数据失败: ' + error.message);
-        });
+        } catch (e) {
+            console.error('JSON解析失败:', e);
+            throw new Error('数据解析失败');
+        }
+    })
+    .catch(error => {
+        clearTimeout(timeoutId);
+        console.error('加载数据失败:', error);
+        // 尝试使用本地备份数据
+        loadLocalBackupData();
+    });
 }
 
-// 获取API基础URL
+// 加载本地备份数据
+function loadLocalBackupData() {
+    console.log('尝试加载本地备份数据');
+    fetch('home_data.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Local backup error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        try {
+            const homeDataResult = JSON.parse(text);
+            homeData = homeDataResult;
+            console.log('Local backup data loaded, keys:', Object.keys(homeData));
+            
+            // 检查频道数据是否存在
+            if (homeData[currentChannelId]) {
+                channelData = homeData[currentChannelId];
+                console.log('Channel data found in local backup:', channelData);
+                currentPage = channelData.page || 1;
+                totalPages = channelData.totalPages || 1;
+                pageSize = channelData.pageSize || 20;
+                
+                renderChannel();
+                hideLoading();
+            } else {
+                console.log('Channel data not found in local backup, available keys:', Object.keys(homeData));
+                hideLoading();
+                showError('找不到频道数据');
+            }
+        } catch (e) {
+            console.error('Local backup JSON parse error:', e);
+            hideLoading();
+            showError('数据解析失败');
+        }
+    })
+    .catch(error => {
+        console.error('加载本地备份数据失败:', error);
+        hideLoading();
+        showError('加载数据失败: ' + error.message);
+    });
+}
+
+// 获取API基础URL - 直接访问（适合服务器部署）
 function getApiUrl() {
-    // 本地测试：优先使用本地JSON文件
-    return 'home_data.json';
+    // 直接访问远程API（无代理）
+    return 'https://pastebin.com/raw/wHzzja05';
     
-    // 远程API（取消注释使用）
+    // 本地测试（取消注释使用）
     /*
-    return 'https://api.allorigins.win/raw?url=https://pastebin.com/raw/wHzzja05';
+    return 'home_data.json';
     */
 }
 

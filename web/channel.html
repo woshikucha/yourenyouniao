@@ -3,37 +3,591 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>频道</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>有人有鸟-每日更新永久免费</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式重置 - 确保无横向滚动条 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* 防止横向滚动 */
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul, ol {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+
+        
+        /* 频道页样式 */
+        .channel-header {
+            padding: 25px 0;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+        
+        .channel-title {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #ff5f00;
+        }
+        
+        .channel-desc {
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 14px;
+        }
+        
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+            width: 100%;
+        }
+        
+        .video-item {
+            background-color: #181818;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 95, 0, 0.2);
+        }
+        
+        /* 视频缩略图保持3:2比例 */
+        .video-thumb-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9比例 */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .video-info {
+            padding: 12px;
+        }
+        
+        .video-title {
+            font-size: 14px;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #222;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .page-btn:hover, .page-btn.active {
+            background-color: #ff5f00;
+        }
+        
+
+        
+        /* =============== 响应式设计 =============== */
+        /* 超大屏幕 (> 1600px) */
+        @media (min-width: 1601px) {
+            .container {
+                max-width: 1600px;
+            }
+        }
+        
+        /* 大屏幕 (1200px - 1600px) */
+        @media (min-width: 1200px) and (max-width: 1600px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .channel-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* 中等屏幕 (992px - 1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container {
+                max-width: 992px;
+            }
+            
+            .channel-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* 小屏幕 (768px - 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container {
+                max-width: 768px;
+                padding: 0 12px;
+            }
+            
+            .channel-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* 移动端 (576px - 767px) */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .container {
+                max-width: 576px;
+                padding: 0 10px;
+            }
+            
+            .channel-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .channel-title {
+                font-size: 24px;
+            }
+        }
+        
+        /* 超小屏幕 (< 576px) */
+        @media (max-width: 575px) {
+            .container {
+                width: 100%;
+                padding: 0 8px;
+            }
+            
+            /* 移动端：每行最多两组数据 */
+            .channel-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .channel-title {
+                font-size: 22px;
+            }
+            
+            .video-info {
+                padding: 8px;
+            }
+            
+            .video-title {
+                font-size: 12px;
+            }
+            
+            .video-meta {
+                font-size: 10px;
+            }
+            
+            .page-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+        }
+        
+        /* 极窄屏幕 (< 400px) */
+        @media (max-width: 400px) {
+            .channel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <!-- 加载动画 -->
-        <div id="loading-container" class="loading-container">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">加载中...</div>
-        </div>
+    <!-- 引入头部导航 -->
+    <div id="header-placeholder"></div>
+    <script>
+        // 加载头部导航
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                // 设置导航激活状态
+                const channelType = new URLSearchParams(window.location.search).get('type') || '热门推荐';
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach(link => {
+                    if (link.href.includes(`type=${channelType}`)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+    </script>
 
-        <!-- 频道页容器 -->
-        <div id="channel-container" class="channel-container hidden">
-            <!-- 频道标题 -->
-            <div id="channel-title" class="channel-title"></div>
-            
-            <!-- 频道广告 -->
-            <div id="channel-ad-container" class="ad-container hidden"></div>
-            
-            <!-- 电影网格 -->
-            <div id="movie-grid" class="movie-grid"></div>
-            
-            <!-- 翻页控制 -->
-            <div id="pagination-container" class="pagination-container hidden">
-                <button id="btn-prev-page" class="pagination-btn" onclick="prevPage()">上一页</button>
-                <span id="page-info" class="page-info"></span>
-                <button id="btn-next-page" class="pagination-btn" onclick="nextPage()">下一页</button>
-            </div>
+    <!-- 频道页内容 -->
+    <div class="container">
+        <div class="channel-header">
+            <h1 id="channel-title" class="channel-title">频道名称</h1>
+            <p id="channel-desc" class="channel-desc">频道描述信息将在这里显示</p>
+        </div>
+        
+        <div class="channel-grid" id="channel-videos">
+            <!-- 视频项将通过JS动态加载 -->
+        </div>
+        
+        <!-- 分页组件 -->
+        <div class="pagination" id="pagination">
+            <!-- 分页按钮将通过JS动态生成 -->
         </div>
     </div>
 
-    <script src="channel.js"></script>
+    <!-- 引入页脚 -->
+    <div id="footer-placeholder"></div>
+    <script>
+        // 加载页脚
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+
+    <script>
+        // URL参数加密和解密函数
+        function encryptParam(param) {
+            return btoa(encodeURIComponent(param));
+        }
+        
+        function decryptParam(encryptedParam) {
+            try {
+                return decodeURIComponent(atob(encryptedParam));
+            } catch (e) {
+                console.error('解密参数失败:', e);
+                return encryptedParam;
+            }
+        }
+        
+        // 获取URL参数
+        function getUrlParam(name) {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const value = urlParams.get(name);
+                console.log('getUrlParam获取参数:', name, '=', value);
+                if (value) {
+                    // 尝试解密参数，如果解密失败则返回原始值
+                    try {
+                        const decryptedValue = decryptParam(value);
+                        console.log('解密后的参数值:', decryptedValue);
+                        return decryptedValue;
+                    } catch (e) {
+                        // 解密失败，说明参数未加密，直接返回原始值
+                        console.log('解密失败，返回原始值:', value);
+                        return value;
+                    }
+                }
+                console.log('参数不存在，返回null');
+                return null;
+            } catch (e) {
+                console.error('获取URL参数失败:', e);
+                return null;
+            }
+        }
+        
+        // 显示频道页
+        function showChannelPage(channelName, page = 1) {
+            // 从本地assets目录加载对应名称的JSON文件
+            console.log('showChannelPage被调用，channelName:', channelName, 'page:', page);
+            console.log('channelName类型:', typeof channelName);
+            
+            // 确保channelName有效
+            if (!channelName || typeof channelName !== 'string' || channelName.trim() === '') {
+                console.log('channelName无效，使用默认值"rmtj"');
+                channelName = 'rmtj';
+            } else {
+                channelName = channelName.trim();
+                console.log('channelName长度:', channelName.length);
+            }
+            
+            // 频道名称映射，避免乱码问题
+            const channelNames = {
+                'rmtj': '热门推荐',
+                'hrzq': '黒人专区',
+                'dypl': '电影片库',
+                'dspl': '电视剧库',
+                'dmpl': '动漫片库',
+                'zypl': '综艺片库',
+                'jlp': '纪录片',
+                'ty': '体育',
+                'js': '军事',
+                'yl': '娱乐',
+                'kj': '科技',
+                'sh': '生活',
+                'ls': '历史',
+                'jy': '教育',
+                'ys': '艺术',
+                'qc': '汽车',
+                'cy': '创业',
+                'ms': '美食',
+                'lx': '旅行',
+                'ylq': '娱乐圈',
+                'xw': '新闻',
+                'tt': '天天',
+                'ylpl': '娱乐片库',
+                'ss': '时尚',
+                'aimx': 'AI明星',
+                'xgmm': '性感美女',
+                'mn': '美女',
+                'mr': '美人',
+                'gy': '国产',
+                'ow': '欧美',
+                'rb': '日本',
+                'kr': '韩国',
+                'as': '亚洲',
+                'hq': '高清',
+                '3d': '3D',
+                '4k': '4K',
+                'vr': 'VR',
+                'hd': '高清',
+                'sd': '标清'
+            };
+            
+            // 获取频道名称
+            const channelTitle = channelNames[channelName] || channelName || '频道名称';
+            console.log('频道标题:', channelTitle);
+            
+            // 从本地assets目录加载对应名称的JSON文件
+            const localEndpoint = `assets/${channelName}.json`;
+            console.log('尝试加载频道数据:', localEndpoint);
+            
+            // 加载本地数据
+            try {
+                // 使用fetch API加载数据
+                console.log('使用fetch API加载数据...');
+                fetch(localEndpoint)
+                    .then(response => {
+                        console.log('fetch响应状态:', response.status);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('频道数据加载成功:', data);
+                        
+                        // 输出分页信息
+                        console.log('频道ID:', data.channelId);
+                        console.log('当前页码:', data.page);
+                        console.log('每页数量:', data.pageSize);
+                        console.log('总数据量:', data.totalCount);
+                        console.log('总页数:', data.totalPages);
+                        console.log('视频数量:', (data.items || data.movies || []).length);
+                        
+                        // 更新频道标题和描述
+                        const displayTitle = data.name || channelTitle;
+                        const channelDesc = data.desc || `共${data.totalCount || 0}条数据，共${data.totalPages || 0}页`;
+                        console.log('频道标题:', displayTitle);
+                        document.getElementById('channel-title').textContent = displayTitle;
+                        document.getElementById('channel-desc').textContent = channelDesc;
+                        
+                        // 生成视频项
+                        const channelVideos = document.getElementById('channel-videos');
+                        channelVideos.innerHTML = '';
+                        
+                        // 每页显示20条数据，根据页码计算起始索引
+                        const allVideos = data.items || data.movies || [];
+                        const pageSize = 20;
+                        const startIndex = (page - 1) * pageSize;
+                        const videos = allVideos.slice(startIndex, startIndex + pageSize);
+                        if (allVideos.length === 0) {
+                            channelVideos.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: #aaa;">该频道暂无视频内容</p>';
+                        } else {
+                            videos.forEach((movie, index) => {
+                                const videoItem = document.createElement('div');
+                                videoItem.className = 'video-item';
+                                videoItem.innerHTML = `
+                                    <a href="player.html?url=${encryptParam(movie.video_url)}&title=${encryptParam(movie.title)}&poster=${encryptParam(movie.poster)}">
+                                        <div class="video-thumb-container">
+                                            <img src="${movie.poster}" alt="${movie.title}" class="video-thumb">
+                                        </div>
+                                        <div class="video-info">
+                                            <h3 class="video-title">${movie.title}</h3>
+                                        </div>
+                                    </a>
+                                `;
+                                channelVideos.appendChild(videoItem);
+                            });
+                        }
+                        
+                        // 生成分页组件
+                        generatePagination(channelName, page, data.totalPages || 10);
+                    })
+                    .catch(error => {
+                        console.error('加载频道数据失败:', error);
+                        // 显示错误信息
+                        document.getElementById('channel-title').textContent = '加载失败';
+                        document.getElementById('channel-desc').textContent = '无法加载频道数据，请稍后重试';
+                        document.getElementById('channel-videos').innerHTML = `<p style="text-align: center; grid-column: 1 / -1; color: #ff5f00;">错误: ${error.message}</p>`;
+                    });
+            } catch (error) {
+                console.error('加载频道数据失败:', error);
+                // 显示错误信息
+                document.getElementById('channel-title').textContent = '加载失败';
+                document.getElementById('channel-desc').textContent = '无法加载频道数据，请稍后重试';
+                document.getElementById('channel-videos').innerHTML = `<p style="text-align: center; grid-column: 1 / -1; color: #ff5f00;">错误: ${error.message}</p>`;
+            }
+        }
+        
+        // 生成分页组件
+        function generatePagination(channelName, currentPage, totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            console.log('生成分页组件，channelName:', channelName, 'currentPage:', currentPage, 'totalPages:', totalPages);
+            
+            // 上一页按钮
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('div');
+                prevBtn.className = 'page-btn';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener('click', () => {
+                    showChannelPage(channelName, currentPage - 1);
+                });
+                pagination.appendChild(prevBtn);
+            }
+            
+            // 页码按钮
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    if (i !== currentPage) {
+                        showChannelPage(channelName, i);
+                    }
+                });
+                pagination.appendChild(pageBtn);
+            }
+            
+            // 下一页按钮
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('div');
+                nextBtn.className = 'page-btn';
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener('click', () => {
+                    showChannelPage(channelName, currentPage + 1);
+                });
+                pagination.appendChild(nextBtn);
+            }
+        }
+        
+
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取频道类型
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawType = urlParams.get('type');
+            console.log('原始type参数:', rawType);
+            console.log('原始type参数类型:', typeof rawType);
+            
+            // 直接使用原始type参数，不进行解密，避免乱码问题
+            const channelType = rawType || 'rmtj';
+            console.log('处理后的channelType:', channelType);
+            console.log('处理后的channelType类型:', typeof channelType);
+            
+            // 测试rmtj.json文件是否存在
+            const testXhr = new XMLHttpRequest();
+            testXhr.open('GET', '/assets/rmtj.json', true);
+            testXhr.onreadystatechange = function() {
+                if (testXhr.readyState === 4) {
+                    console.log('测试rmtj.json文件状态:', testXhr.status);
+                    if (testXhr.status === 200) {
+                        console.log('rmtj.json文件存在且可访问');
+                        // 尝试解析文件内容
+                        try {
+                            const data = JSON.parse(testXhr.responseText);
+                            console.log('rmtj.json文件内容:', data);
+                            console.log('rmtj.json文件中的频道ID:', data.channelId);
+                            console.log('rmtj.json文件中的总数据量:', data.totalCount);
+                            console.log('rmtj.json文件中的总页数:', data.totalPages);
+                        } catch (e) {
+                            console.error('解析rmtj.json文件失败:', e);
+                        }
+                    } else {
+                        console.log('rmtj.json文件不存在或不可访问');
+                    }
+                }
+            };
+            testXhr.send();
+            
+            // 显示对应频道
+            showChannelPage(channelType);
+            
+            // 更新导航激活状态
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                if (link.href.includes(`type=${channelType}`)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

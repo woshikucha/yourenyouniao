@@ -1,7 +1,5 @@
 // 主页脚本
 let homeData = null;
-let currentBannerIndex = 0;
-let bannerTimer = null;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -15,58 +13,115 @@ function initApp() {
     loadHomeData();
 }
 
-// 获取API基础URL - 带代理轮换
+// 获取API基础URL - 直接访问（适合服务器部署）
 function getApiUrl() {
-    // 本地测试：优先使用本地JSON文件
-    return 'home_data.json';
+    // 直接访问远程API（无代理）
+    return 'https://pastebin.com/raw/wHzzja05';
     
-    // 远程API（取消注释使用）
+    // 本地测试（取消注释使用）
     /*
-    const proxies = [
-        'https://api.allorigins.win/raw?url=',
-        'https://corsproxy.io/?',
-        'https://thingproxy.freeboard.io/fetch/'
-    ];
-    const proxy = proxies[Math.floor(Math.random() * proxies.length)];
-    return proxy + 'https://pastebin.com/raw/wHzzja05';
+    return 'home_data.json';
     */
 }
 
 // 加载首页数据
 function loadHomeData() {
     const apiUrl = getApiUrl();
+    console.log('====================================');
     console.log('开始加载首页数据，API地址:', apiUrl);
+    console.log('当前时间:', new Date().toLocaleString());
+    console.log('====================================');
     
-    fetch(apiUrl)
-        .then(response => {
-            console.log('收到响应，状态:', response.status);
-            console.log('Content-Type:', response.headers.get('Content-Type'));
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    // 添加超时处理
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+        console.log('⏰ 远程API请求超时，切换到本地备份');
+        controller.abort();
+    }, 10000); // 10秒超时
+    
+    console.log('🚀 发起远程API请求...');
+    
+    fetch(apiUrl, {
+        signal: controller.signal,
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
+    .then(response => {
+        clearTimeout(timeoutId);
+        console.log('✅ 收到远程API响应');
+        console.log('状态码:', response.status);
+        console.log('状态文本:', response.statusText);
+        console.log('Content-Type:', response.headers.get('Content-Type'));
+        console.log('响应URL:', response.url);
+        
+        if (!response.ok) {
+            console.log('❌ 远程API响应失败:', response.status);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        console.log('📝 远程API响应文本长度:', text.length);
+        console.log('📝 响应文本前200字符:', text.substring(0, 200));
+        try {
+            const data = JSON.parse(text);
+            console.log('🎉 远程API数据解析成功');
+            console.log('数据类型:', typeof data);
+            if (typeof data === 'object') {
+                console.log('数据键名:', Object.keys(data));
             }
-            return response.text();
-        })
-        .then(text => {
-            console.log('响应文本长度:', text.length);
-            console.log('响应文本前100字符:', text.substring(0, 100));
-            try {
-                const data = JSON.parse(text);
-                console.log('数据加载成功:', data);
-                homeData = data;
-                hideLoading();
-                showHome();
-            } catch (e) {
-                console.error('JSON解析失败:', e);
-                console.error('完整响应:', text);
-                hideLoading();
-                showHome();
-            }
-        })
-        .catch(error => {
-            console.error('加载数据失败:', error);
+            homeData = data;
             hideLoading();
             showHome();
-        });
+        } catch (e) {
+            console.log('❌ 远程API数据解析失败:', e.message);
+            console.log('完整响应:', text);
+            // 尝试使用本地备份数据
+            loadLocalBackupData();
+        }
+    })
+    .catch(error => {
+        clearTimeout(timeoutId);
+        console.log('💥 远程API请求失败:', error.message);
+        console.log('错误类型:', error.name);
+        if (error.name === 'AbortError') {
+            console.log('⚠️ 请求被中止（可能是超时）');
+        }
+        // 尝试使用本地备份数据
+        loadLocalBackupData();
+    });
+}
+
+// 加载本地备份数据
+function loadLocalBackupData() {
+    console.log('尝试加载本地备份数据');
+    fetch('home_data.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Local backup error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(text => {
+        try {
+            const data = JSON.parse(text);
+            console.log('本地备份数据加载成功');
+            homeData = data;
+            hideLoading();
+            showHome();
+        } catch (e) {
+            console.error('本地备份数据解析失败:', e);
+            hideLoading();
+            showHome();
+        }
+    })
+    .catch(error => {
+        console.error('加载本地备份数据失败:', error);
+        hideLoading();
+        showHome();
+    });
 }
 
 // 显示主页
@@ -74,11 +129,9 @@ function showHome() {
     const homeContainer = document.getElementById('home-container');
     homeContainer.classList.remove('hidden');
     
-    renderBanner();
     renderNavigation();
     renderNotificationBar();
     renderModules();
-    startBannerAutoPlay();
 }
 
 // 渲染导航菜单
@@ -100,82 +153,6 @@ function renderNavigation() {
         navItem.addEventListener('click', () => openChannel(item.channel_key, item.name));
         navigationContainer.appendChild(navItem);
     });
-}
-
-// 渲染轮播图
-function renderBanner() {
-    const bannerContainer = document.getElementById('banner-container');
-    const bannerSlider = document.getElementById('banner-slider');
-    const bannerIndicator = document.getElementById('banner-indicator');
-    
-    if (!homeData || !homeData.banner_slides || homeData.banner_slides.length === 0) {
-        bannerContainer.classList.add('hidden');
-        return;
-    }
-    
-    bannerContainer.classList.remove('hidden');
-    bannerSlider.innerHTML = '';
-    bannerIndicator.innerHTML = '';
-    
-    homeData.banner_slides.forEach((slide, index) => {
-        const slideDiv = document.createElement('div');
-        slideDiv.className = 'banner-slide';
-        slideDiv.innerHTML = `
-            <img class="banner-image" src="${slide.poster}" alt="${slide.title}" loading="lazy">
-            <div class="banner-title">${slide.title}</div>
-        `;
-        slideDiv.addEventListener('click', () => openPlayer(slide));
-        bannerSlider.appendChild(slideDiv);
-        
-        const dot = document.createElement('div');
-        dot.className = `banner-dot ${index === 0 ? 'active' : ''}`;
-        dot.addEventListener('click', () => goToBannerSlide(index));
-        bannerIndicator.appendChild(dot);
-    });
-    
-    updateBannerPosition();
-}
-
-// 更新轮播图位置
-function updateBannerPosition() {
-    const bannerSlider = document.getElementById('banner-slider');
-    const dots = document.querySelectorAll('.banner-dot');
-    
-    bannerSlider.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
-    
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentBannerIndex);
-    });
-}
-
-// 跳转到指定轮播图
-function goToBannerSlide(index) {
-    currentBannerIndex = index;
-    updateBannerPosition();
-    resetBannerTimer();
-}
-
-// 下一张轮播图
-function nextBannerSlide() {
-    const totalSlides = homeData.banner_slides.length;
-    currentBannerIndex = (currentBannerIndex + 1) % totalSlides;
-    updateBannerPosition();
-}
-
-// 开始轮播图自动播放
-function startBannerAutoPlay() {
-    if (bannerTimer) {
-        clearInterval(bannerTimer);
-    }
-    bannerTimer = setInterval(nextBannerSlide, 3000);
-}
-
-// 重置轮播图计时器
-function resetBannerTimer() {
-    if (bannerTimer) {
-        clearInterval(bannerTimer);
-    }
-    startBannerAutoPlay();
 }
 
 // 渲染通知栏
@@ -342,49 +319,6 @@ function hideLoading() {
     const loadingContainer = document.getElementById('loading-container');
     loadingContainer.classList.add('hidden');
 }
-
-// 触摸滑动支持
-let touchStartX = 0;
-let touchEndX = 0;
-
-document.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-});
-
-function handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = touchStartX - touchEndX;
-    
-    if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-            nextBannerSlide();
-        } else {
-            const totalSlides = homeData.banner_slides.length;
-            currentBannerIndex = (currentBannerIndex - 1 + totalSlides) % totalSlides;
-            updateBannerPosition();
-        }
-        resetBannerTimer();
-    }
-}
-
-// 页面可见性变化处理
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        if (bannerTimer) {
-            clearInterval(bannerTimer);
-        }
-    } else {
-        const homeContainer = document.getElementById('home-container');
-        if (!homeContainer.classList.contains('hidden')) {
-            startBannerAutoPlay();
-        }
-    }
-});
 
 // 关闭悬浮下载按钮
 function closeFloatingDownload() {

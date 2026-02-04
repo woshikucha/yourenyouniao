@@ -1,26 +1,332 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>播放器</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>有人有鸟-每日更新永久免费</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- HLS.js库用于支持m3u8视频播放 -->
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* 基础样式重置 - 确保无横向滚动条 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* 防止横向滚动 */
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul, ol {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+
+        
+        /* 播放页样式 */
+        .player-container {
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+        
+        #video-player {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            background-color: #000;
+            aspect-ratio: 16/9;
+        }
+        
+        .video-details {
+            padding: 20px;
+            width: 100%;
+        }
+        
+        .video-main-title {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        
+        .video-stats {
+            display: flex;
+            gap: 15px;
+            color: #aaa;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .video-description {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+
+        
+        /* =============== 响应式设计 =============== */
+        /* 超大屏幕 (> 1600px) */
+        @media (min-width: 1601px) {
+            .container {
+                max-width: 1600px;
+            }
+        }
+        
+        /* 大屏幕 (1200px - 1600px) */
+        @media (min-width: 1200px) and (max-width: 1600px) {
+            .container {
+                max-width: 1200px;
+            }
+        }
+        
+        /* 中等屏幕 (992px - 1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container {
+                max-width: 992px;
+            }
+        }
+        
+        /* 小屏幕 (768px - 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container {
+                max-width: 768px;
+                padding: 0 12px;
+            }
+            
+            #video-player {
+                max-height: 50vh;
+            }
+            
+            .video-main-title {
+                font-size: 20px;
+            }
+        }
+        
+        /* 移动端 (576px - 767px) */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .container {
+                max-width: 576px;
+                padding: 0 10px;
+            }
+            
+            #video-player {
+                max-height: 50vh;
+            }
+            
+            .video-main-title {
+                font-size: 20px;
+            }
+        }
+        
+        /* 超小屏幕 (< 576px) */
+        @media (max-width: 575px) {
+            .container {
+                width: 100%;
+                padding: 0 8px;
+            }
+            
+            #video-player {
+                max-height: 40vh;
+            }
+            
+            .video-main-title {
+                font-size: 18px;
+            }
+            
+            .video-stats {
+                font-size: 13px;
+                gap: 10px;
+            }
+        }
+        
+        /* 极窄屏幕 (< 400px) */
+        @media (max-width: 400px) {
+        }
+    </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <!-- 播放器容器 -->
+    <!-- 引入头部导航 -->
+    <div id="header-placeholder"></div>
+    <script>
+        // 加载头部导航
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+    </script>
+
+    <!-- 播放页内容 -->
+    <div class="container">
         <div class="player-container">
-            <button id="player-back" class="player-back" onclick="goBack()">返回</button>
-            <div id="player-video" class="player-video"></div>
-            <div id="player-ad-container" class="ad-container hidden"></div>
-            <div class="player-info">
-                <div id="player-title" class="player-title"></div>
-                <div id="player-type" class="player-type"></div>
+            <video id="video-player" controls poster="">
+                <source src="https://example.com/videos/sample.m3u8" type="application/x-mpegURL">
+                您的浏览器不支持视频播放
+            </video>
+        </div>
+        
+        <div class="video-details">
+            <h1 id="video-main-title" class="video-main-title">视频标题</h1>
+            <div class="video-stats">
+                <span><i class="fas fa-eye"></i> <span id="play-count">125.8万</span>次播放</span>
+                <span><i class="fas fa-thumbs-up"></i> <span id="like-count">8.6万</span>点赞</span>
+                <span><i class="fas fa-calendar-alt"></i> <span id="publish-date">2025-01-15</span></span>
             </div>
+            <p id="video-description" class="video-description">
+                视频描述内容将在这里显示。这是一个示例描述，实际内容会根据所选视频动态加载。
+            </p>
         </div>
     </div>
 
-    <script src="player.js"></script>
+    <!-- 引入页脚 -->
+    <div id="footer-placeholder"></div>
+    <script>
+        // 加载页脚
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+
+    <script>
+        // URL参数加密和解密函数
+        function encryptParam(param) {
+            return btoa(encodeURIComponent(param));
+        }
+        
+        function decryptParam(encryptedParam) {
+            try {
+                return decodeURIComponent(atob(encryptedParam));
+            } catch (e) {
+                console.error('解密参数失败:', e);
+                return '';
+            }
+        }
+        
+        // 获取URL参数
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encryptedValue = urlParams.get(name);
+            if (encryptedValue) {
+                return decryptParam(encryptedValue);
+            }
+            return null;
+        }
+        
+        // 显示播放页
+        function showPlayPage() {
+            // 获取URL参数中的视频URL和标题
+            const videoUrl = getUrlParam('url');
+            const videoTitle = getUrlParam('title');
+            const videoId = getUrlParam('id');
+            const posterUrl = getUrlParam('poster');
+
+            // 更新页面内容
+            if (videoTitle) {
+                document.getElementById('video-main-title').textContent = decodeURIComponent(videoTitle);
+            } else {
+                document.getElementById('video-main-title').textContent = '视频标题';
+            }
+
+            // 固定显示的描述
+            document.getElementById('video-description').textContent = '视频描述内容将在这里显示。这是一个示例描述，实际内容会根据所选视频动态加载。';
+
+            // 固定显示的统计数据
+            document.getElementById('play-count').textContent = '125.8万';
+            document.getElementById('like-count').textContent = '8.6万';
+            document.getElementById('publish-date').textContent = '2025-01-15';
+
+            // 设置视频源
+            const videoPlayer = document.getElementById('video-player');
+
+            // 设置视频缩略图
+            if (posterUrl) {
+                videoPlayer.poster = decodeURIComponent(posterUrl);
+                console.log('设置视频缩略图:', decodeURIComponent(posterUrl));
+            }
+
+            if (videoUrl) {
+                const decodedUrl = decodeURIComponent(videoUrl);
+                console.log('视频URL:', decodedUrl);
+
+                // 检查是否为m3u8格式
+                if (decodedUrl.includes('.m3u8')) {
+                    // 使用HLS.js播放m3u8格式视频
+                    if (Hls.isSupported()) {
+                        const hls = new Hls();
+                        hls.loadSource(decodedUrl);
+                        hls.attachMedia(videoPlayer);
+                        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                            console.log('视频加载成功，准备播放');
+                        });
+                        hls.on(Hls.Events.ERROR, function(event, data) {
+                            console.error('HLS错误:', data);
+                            if (data.fatal) {
+                                switch(data.type) {
+                                    case Hls.ErrorTypes.NETWORK_ERROR:
+                                        console.error('网络错误，尝试重新加载');
+                                        hls.startLoad();
+                                        break;
+                                    case Hls.ErrorTypes.MEDIA_ERROR:
+                                        console.error('媒体错误，尝试恢复');
+                                        hls.recoverMediaError();
+                                        break;
+                                    default:
+                                        console.error('致命错误，无法恢复');
+                                        hls.destroy();
+                                        break;
+                                }
+                            }
+                        });
+                    } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                        // 浏览器原生支持HLS
+                        videoPlayer.src = decodedUrl;
+                        videoPlayer.load();
+                    } else {
+                        console.error('浏览器不支持HLS视频播放');
+                    }
+                } else {
+                    // 普通视频格式
+                    const source = videoPlayer.querySelector('source');
+                    source.src = decodedUrl;
+                    videoPlayer.load();
+                }
+            }
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 显示视频
+            showPlayPage();
+        });
+    </script>
 </body>
 </html>
