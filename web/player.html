@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <!-- HLS.js库用于支持m3u8视频播放 -->
         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <!-- Google IMA SDK用于支持VAST广告 -->
+        <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
     <style>
         /* 基础样式重置 - 确保无横向滚动条 */
         * {
@@ -145,20 +147,41 @@
             }
         }
         
-        /* 超小屏幕 (< 576px) */
+        /* 瓒呭皬灞忓箷 (< 576px) */
         @media (max-width: 575px) {
             .container {
                 width: 100%;
                 padding: 0 8px;
             }
-            
+
             #video-player {
                 max-height: 40vh;
             }
-            
+
             .video-main-title {
                 font-size: 18px;
             }
+        }
+        
+        /* 广告样式 */
+        .ad-content {
+            width: 100%;
+            min-height: 150px;
+            background-color: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .ad-content iframe,
+        .ad-content img {
+            width: 100%;
+            border: none;
+        }
+        
+        .player-ad-container {
+            margin-top: 20px;
+        }
             
             .video-stats {
                 font-size: 13px;
@@ -186,10 +209,13 @@
     <!-- 播放页内容 -->
     <div class="container">
         <div class="player-container">
-            <video id="video-player" controls poster="">
-                <source src="https://example.com/videos/sample.m3u8" type="application/x-mpegURL">
-                您的浏览器不支持视频播放
-            </video>
+            <div id="video-wrapper" style="position: relative; width: 100%; padding-bottom: 56.25%; min-height: 400px;">
+                <video id="video-player" controls poster="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                    <source src="https://example.com/videos/sample.m3u8" type="application/x-mpegURL">
+                    您的浏览器不支持视频播放
+                </video>
+                <div id="ad-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;"></div>
+            </div>
         </div>
         
         <div class="video-details">
@@ -202,6 +228,16 @@
             <p id="video-description" class="video-description">
                 视频描述内容将在这里显示。这是一个示例描述，实际内容会根据所选视频动态加载。
             </p>
+        </div>
+        
+        <!-- 播放器广告 -->
+        <div class="player-ad-container" id="player-ad-container" style="display: block;">
+            <h3 style="margin-bottom: 10px;">广告</h3>
+            <div id="player-ad-content" class="ad-content" style="min-height: 250px; background-color: #111; border-radius: 8px; overflow: visible; position: relative;">
+                <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+                <ins class="eas6a97888e14" data-zoneid="5831088" style="display: block; width: 100%; height: 250px;"></ins>
+                <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+            </div>
         </div>
     </div>
 
@@ -286,6 +322,7 @@
                         hls.attachMedia(videoPlayer);
                         hls.on(Hls.Events.MANIFEST_PARSED, function() {
                             console.log('视频加载成功，准备播放');
+                            initializeAds();
                         });
                         hls.on(Hls.Events.ERROR, function(event, data) {
                             console.error('HLS错误:', data);
@@ -310,6 +347,9 @@
                         // 浏览器原生支持HLS
                         videoPlayer.src = decodedUrl;
                         videoPlayer.load();
+                        videoPlayer.addEventListener('loadedmetadata', function() {
+                            initializeAds();
+                        });
                     } else {
                         console.error('浏览器不支持HLS视频播放');
                     }
@@ -318,6 +358,230 @@
                     const source = videoPlayer.querySelector('source');
                     source.src = decodedUrl;
                     videoPlayer.load();
+                    videoPlayer.addEventListener('loadedmetadata', function() {
+                        initializeAds();
+                    });
+                }
+            }
+        }
+        
+        // 初始化IMA SDK和广告
+        function initializeAds() {
+            const videoPlayer = document.getElementById('video-player');
+            const adContainer = document.getElementById('ad-container');
+            
+            console.log('开始初始化广告...');
+            console.log('当前时间:', new Date().toLocaleString());
+            
+            // 如果已经存在广告管理器，先销毁
+            if (window.adsManager) {
+                try {
+                    window.adsManager.destroy();
+                    window.adsManager = null;
+                    console.log('已销毁旧的广告管理器');
+                } catch (e) {
+                    console.error('销毁广告管理器失败:', e);
+                }
+            }
+            
+            // 如果已经存在AdsLoader，先销毁
+            if (window.adsLoader) {
+                try {
+                    window.adsLoader.contentComplete();
+                    window.adsLoader = null;
+                    console.log('已清理旧的AdsLoader');
+                } catch (e) {
+                    console.error('清理AdsLoader失败:', e);
+                }
+            }
+            
+            // 清空广告容器
+            adContainer.innerHTML = '';
+            console.log('已清空广告容器');
+            
+            // 创建新的AdDisplayContainer
+            const adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, videoPlayer);
+            
+            // 创建新的AdsLoader
+            const adsLoader = new google.ima.AdsLoader(adDisplayContainer);
+            
+            // 监听广告加载事件
+            adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, onAdsManagerLoaded, false);
+            adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, onAdError, false);
+            adsLoader.addEventListener(google.ima.AdEvent.Type.AD_METADATA, onAdMetadata, false);
+            
+            // 创建广告请求
+            const adsRequest = new google.ima.AdsRequest();
+            const timestamp = new Date().getTime();
+            const random = Math.floor(Math.random() * 1000000);
+            const sessionId = Math.random().toString(36).substring(7);
+            const adTagUrl = 'https://s.magsrv.com/v1/vast.php?idzone=5846374&ts=' + timestamp + '&r=' + random + '&sid=' + sessionId;
+            
+            console.log('广告请求URL:', adTagUrl);
+            
+            adsRequest.adTagUrl = adTagUrl;
+            adsRequest.linearAdSlotWidth = videoPlayer.clientWidth;
+            adsRequest.linearAdSlotHeight = videoPlayer.clientHeight;
+            adsRequest.nonLinearAdSlotWidth = videoPlayer.clientWidth;
+            adsRequest.nonLinearAdSlotHeight = videoPlayer.clientHeight / 3;
+            adsRequest.setAdWillAutoPlay(true);
+            adsRequest.setAdWillPlayMuted(false);
+            
+            // 初始化广告容器
+            adDisplayContainer.initialize();
+            console.log('广告容器已初始化');
+            
+            // 请求广告
+            adsLoader.requestAds(adsRequest);
+            console.log('已发送广告请求');
+            
+            // 存储全局变量
+            window.adsLoader = adsLoader;
+            window.adDisplayContainer = adDisplayContainer;
+            window.videoPlayer = videoPlayer;
+        }
+        
+        // 广告管理器加载完成
+        function onAdsManagerLoaded(adsManagerLoadedEvent) {
+            const adsManager = adsManagerLoadedEvent.getAdsManager(window.videoPlayer);
+            
+            // 监听广告事件
+            adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, onAdLoaded);
+            adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, onAdStarted);
+            adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, onAdComplete);
+            adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, onAllAdsComplete);
+            adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, onAdError);
+            
+            // 存储全局变量
+            window.adsManager = adsManager;
+            
+            // 监听广告事件
+            adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, onAdPaused);
+            adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, onAdResumed);
+            adsManager.addEventListener(google.ima.AdEvent.Type.CLICK, onAdClicked);
+            
+            // 初始化广告管理器
+            try {
+                adsManager.init(window.videoPlayer.clientWidth, window.videoPlayer.clientHeight, google.ima.ViewMode.NORMAL);
+                adsManager.start();
+            } catch (adError) {
+                console.error('广告管理器初始化失败:', adError);
+                // 初始化失败时，显示视频播放器控件并播放视频
+                window.videoPlayer.controls = true;
+                window.videoPlayer.play();
+            }
+        }
+        
+        // 广告加载完成
+        function onAdLoaded(adEvent) {
+            console.log('广告加载完成');
+            // 确保广告加载时隐藏视频播放器控件
+            window.videoPlayer.controls = false;
+            // 设置广告容器允许鼠标事件
+            document.getElementById('ad-container').style.pointerEvents = 'auto';
+        }
+        
+        // 广告元数据
+        function onAdMetadata(adEvent) {
+            console.log('广告元数据:', adEvent);
+            // 确保广告元数据加载时隐藏视频播放器控件
+            window.videoPlayer.controls = false;
+            // 设置广告容器允许鼠标事件
+            document.getElementById('ad-container').style.pointerEvents = 'auto';
+        }
+        
+        // 广告开始播放
+        function onAdStarted(adEvent) {
+            console.log('广告开始播放');
+            window.videoPlayer.pause();
+            window.videoPlayer.controls = false;
+            // 设置广告容器允许鼠标事件
+            document.getElementById('ad-container').style.pointerEvents = 'auto';
+        }
+        
+        // 广告暂停
+        function onAdPaused(adEvent) {
+            console.log('广告暂停');
+            // 延迟500ms后自动恢复广告播放
+            setTimeout(function() {
+                if (window.adsManager) {
+                    try {
+                        window.adsManager.resume();
+                        console.log('广告自动恢复播放');
+                    } catch (e) {
+                        console.error('自动恢复广告播放失败:', e);
+                        // 如果恢复失败，显示视频播放器控件
+                        window.videoPlayer.controls = true;
+                    }
+                }
+            }, 500);
+        }
+        
+        // 广告恢复
+        function onAdResumed(adEvent) {
+            console.log('广告恢复');
+            window.videoPlayer.controls = false;
+        }
+        
+        // 广告被点击
+        function onAdClicked(adEvent) {
+            console.log('广告被点击');
+            // 延迟500ms后自动恢复广告播放
+            setTimeout(function() {
+                if (window.adsManager) {
+                    try {
+                        window.adsManager.resume();
+                        console.log('广告恢复播放');
+                    } catch (e) {
+                        console.error('恢复广告播放失败:', e);
+                        // 如果恢复失败，显示视频播放器控件
+                        window.videoPlayer.controls = true;
+                    }
+                }
+            }, 500);
+        }
+        
+        // 广告播放完成
+        function onAdComplete(adEvent) {
+            console.log('广告播放完成');
+        }
+        
+        // 所有广告播放完成
+        function onAllAdsComplete(adEvent) {
+            console.log('所有广告播放完成');
+            window.videoPlayer.controls = true;
+            window.videoPlayer.play();
+            
+            // 设置广告容器不允许鼠标事件
+            document.getElementById('ad-container').style.pointerEvents = 'none';
+            
+            // 销毁广告管理器
+            if (window.adsManager) {
+                try {
+                    window.adsManager.destroy();
+                    window.adsManager = null;
+                } catch (e) {
+                    console.error('销毁广告管理器失败:', e);
+                }
+            }
+        }
+        
+        // 广告错误处理
+        function onAdError(adErrorEvent) {
+            console.error('广告错误:', adErrorEvent.getError());
+            window.videoPlayer.controls = true;
+            window.videoPlayer.play();
+            
+            // 设置广告容器不允许鼠标事件
+            document.getElementById('ad-container').style.pointerEvents = 'none';
+            
+            // 销毁广告管理器
+            if (window.adsManager) {
+                try {
+                    window.adsManager.destroy();
+                    window.adsManager = null;
+                } catch (e) {
+                    console.error('销毁广告管理器失败:', e);
                 }
             }
         }
@@ -326,7 +590,136 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 显示视频
             showPlayPage();
-        });
+            
+            // 添加视频播放器事件监听器
+            const videoPlayer = document.getElementById('video-player');
+            const videoWrapper = document.getElementById('video-wrapper');
+            
+            // 视频播放时确保控件可见
+            videoPlayer.addEventListener('play', function() {
+                console.log('视频开始播放');
+                videoPlayer.controls = true;
+            });
+            
+            // 视频暂停时确保控件可见
+            videoPlayer.addEventListener('pause', function() {
+                console.log('视频暂停');
+                videoPlayer.controls = true;
+            });
+            
+            // 视频结束时确保控件可见
+            videoPlayer.addEventListener('ended', function() {
+                console.log('视频结束');
+                videoPlayer.controls = true;
+            });
+            
+            // 视频加载时确保控件可见
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                console.log('视频元数据加载完成');
+                videoPlayer.controls = true;
+            });
+            
+            // 视频点击时确保控件可见
+            videoPlayer.addEventListener('click', function() {
+                console.log('视频被点击');
+                videoPlayer.controls = true;
+            });
+            
+            // 鼠标悬停在视频上时显示控件
+            videoWrapper.addEventListener('mouseenter', function() {
+                console.log('鼠标悬停在视频上');
+                videoPlayer.controls = true;
+            });
+            
+            // 鼠标离开视频时隐藏控件（如果正在播放）
+            videoWrapper.addEventListener('mouseleave', function() {
+                console.log('鼠标离开视频');
+                if (!videoPlayer.paused) {
+                    videoPlayer.controls = false;
+                }
+            });
+            
+            // 鼠标在视频上移动时显示控件
+            videoWrapper.addEventListener('mousemove', function() {
+                console.log('鼠标在视频上移动');
+                videoPlayer.controls = true;
+            });
+        })
     </script>
+
+    <!-- 安全措施脚本 -->
+    <script>
+        // 禁止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        // 禁止F12键
+        document.addEventListener('keydown', function(e) {
+            // F12键
+            if (e.keyCode === 123) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+J
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                e.preventDefault();
+            }
+            // Ctrl+U
+            if (e.ctrlKey && e.keyCode === 85) {
+                e.preventDefault();
+            }
+        });
+        
+        // 简单的加密函数
+        function encryptUrl(url) {
+            return btoa(encodeURIComponent(url));
+        }
+        
+        // 简单的解密函数
+        function decryptUrl(encryptedUrl) {
+            return decodeURIComponent(atob(encryptedUrl));
+        }
+        
+        // 检测爬取行为
+        function detectCrawling() {
+            // 检测请求频率
+            let requestCount = 0;
+            setInterval(function() {
+                if (requestCount > 50) {
+                    requestCount = 0;
+                }
+            }, 1000);
+            
+            // 重写fetch和XMLHttpRequest
+            const originalFetch = window.fetch;
+            window.fetch = function() {
+                requestCount++;
+                return originalFetch.apply(this, arguments);
+            };
+            
+            const originalXHR = window.XMLHttpRequest;
+            window.XMLHttpRequest = function() {
+                const xhr = new originalXHR();
+                const originalOpen = xhr.open;
+                xhr.open = function() {
+                    requestCount++;
+                    return originalOpen.apply(this, arguments);
+                };
+                return xhr;
+            };
+        }
+        
+        // 初始化安全措施
+        detectCrawling();
+    </script>
+    <script async data-id="101500720" src="//static.getclicky.com/js"></script>
 </body>
 </html>

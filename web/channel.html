@@ -281,8 +281,8 @@
     <!-- 频道页内容 -->
     <div class="container">
         <div class="channel-header">
-            <h1 id="channel-title" class="channel-title">频道名称</h1>
-            <p id="channel-desc" class="channel-desc">频道描述信息将在这里显示</p>
+            <h1 id="channel-title" class="channel-title">加载中...</h1>
+            <p id="channel-desc" class="channel-desc">正在加载频道数据，请稍后...</p>
         </div>
         
         <div class="channel-grid" id="channel-videos">
@@ -589,5 +589,80 @@
             });
         });
     </script>
+
+    <!-- 安全措施脚本 -->
+    <script>
+        // 禁止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        // 禁止F12键
+        document.addEventListener('keydown', function(e) {
+            // F12键
+            if (e.keyCode === 123) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+J
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                e.preventDefault();
+            }
+            // Ctrl+U
+            if (e.ctrlKey && e.keyCode === 85) {
+                e.preventDefault();
+            }
+        });
+        
+        // 简单的加密函数
+        function encryptUrl(url) {
+            return btoa(encodeURIComponent(url));
+        }
+        
+        // 简单的解密函数
+        function decryptUrl(encryptedUrl) {
+            return decodeURIComponent(atob(encryptedUrl));
+        }
+        
+        // 检测爬取行为
+        function detectCrawling() {
+            // 检测请求频率
+            let requestCount = 0;
+            setInterval(function() {
+                if (requestCount > 50) {
+                    requestCount = 0;
+                }
+            }, 1000);
+            
+            // 重写fetch和XMLHttpRequest
+            const originalFetch = window.fetch;
+            window.fetch = function() {
+                requestCount++;
+                return originalFetch.apply(this, arguments);
+            };
+            
+            const originalXHR = window.XMLHttpRequest;
+            window.XMLHttpRequest = function() {
+                const xhr = new originalXHR();
+                const originalOpen = xhr.open;
+                xhr.open = function() {
+                    requestCount++;
+                    return originalOpen.apply(this, arguments);
+                };
+                return xhr;
+            };
+        }
+        
+        // 初始化安全措施
+        detectCrawling();
+    </script>
+    <script async data-id="101500720" src="//static.getclicky.com/js"></script>
 </body>
 </html>

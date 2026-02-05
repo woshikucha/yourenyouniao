@@ -378,6 +378,22 @@
             width: 100%;
         }
         
+        /* 广告样式 */
+        .ad-content {
+            width: 100%;
+            min-height: 150px;
+            background-color: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .ad-content iframe,
+        .ad-content img {
+            width: 100%;
+            border: none;
+        }
+        
         .footer-content {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -441,7 +457,7 @@
             }
             
             .video-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
             
             .nav-links {
@@ -482,7 +498,7 @@
             }
             
             .video-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .footer-content {
@@ -698,7 +714,8 @@
         /* 极窄屏幕 (< 400px) */
         @media (max-width: 400px) {
             .video-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
             }
             
             .nav-links a {
@@ -707,6 +724,19 @@
             
             .search-box input {
                 font-size: 12px;
+            }
+            
+            .video-info {
+                padding: 6px;
+            }
+            
+            .video-title {
+                font-size: 11px;
+                -webkit-line-clamp: 2;
+            }
+            
+            .video-meta {
+                font-size: 9px;
             }
         }
     </style>
@@ -722,28 +752,9 @@
             <main class="content-area">
                 <!-- 轮播图 -->
                 <section class="carousel">
-                    <div class="carousel-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/1600/900?random=1');">
-                        <div class="slide-content">
-                            <h2 class="slide-title">海绵宝宝比基尼海滩新冒险</h2>
-                            <p class="slide-desc">适合7岁以上观看｜海绵宝宝比基尼海滩新冒险，最高热度破5000</p>
-                        </div>
-                    </div>
-                    <div class="carousel-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/1600/900?random=2');">
-                        <div class="slide-content">
-                            <h2 class="slide-title">以我新声，见我新生</h2>
-                            <p class="slide-desc">挖掘原创好音乐，为华语乐坛寻找下一首金曲，用音乐点燃你的耳朵！</p>
-                        </div>
-                    </div>
-                    <div class="carousel-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/1600/900?random=3');">
-                        <div class="slide-content">
-                            <h2 class="slide-title">双时空叙事，深刻揭露日军731部队暴行</h2>
-                            <p class="slide-desc">凸显中国人民坚韧的抗争精神</p>
-                        </div>
-                    </div>
-                    <div class="carousel-controls">
-                        <div class="carousel-btn active" data-slide="0"></div>
-                        <div class="carousel-btn" data-slide="1"></div>
-                        <div class="carousel-btn" data-slide="2"></div>
+                    <!-- 加载指示器 -->
+                    <div style="display: flex; justify-content: center; align-items: center; height: 300px; color: #ff5f00; font-size: 18px;">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> 加载中...
                     </div>
                 </section>
                 
@@ -752,266 +763,52 @@
                     <div class="marquee-label">通知</div>
                     <div class="marquee-text">
                         <div class="marquee-content">
-                            系统通知：优酷VIP会员年度盛典即将开启！年度热播剧集《算 孟扬》双时空叙事，深刻揭露日军731部队泯灭人性的暴行，凸显中国人民坚韧的抗争精神。少儿频道《汪汪队》更新至14期，适合3-9岁观看，全力守护冒险湾，最高热度破8000！
+                            加载中...
                         </div>
                     </div>
                 </section>
                 
                 <!-- 推荐模块1 -->
                 <section class="recommend-section">
+                   
                     <div class="section-header">
-                        <h2 class="section-title">热门推荐</h2>
-                        <a href="channel3.html?type=热门推荐" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
+                        <h2 class="section-title">加载中...</h2>
+                        <a href="#" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
                     </div>
                     <div class="video-grid">
-                        <!-- 视频项1 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=1">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=4" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">海绵宝宝比基尼海滩新冒险</h3>
-                                    <div class="video-meta">
-                                        <span>更新至5期</span>
-                                        <span>热度 5000+</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <!-- 视频项2 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=2">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=5" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">以我新声，见我新生！原创音乐大赛</h3>
-                                    <div class="video-meta">
-                                        <span>更新至02-02期</span>
-                                        <span>热播中</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <!-- 视频项3 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=3">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=6" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">汪汪队全力守护冒险湾</h3>
-                                    <div class="video-meta">
-                                        <span>更新至14期</span>
-                                        <span>热度 8000+</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <!-- 视频项4 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=4">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=7" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">央视精品历史纪录片</h3>
-                                    <div class="video-meta">
-                                        <span>共10集</span>
-                                        <span>豆瓣9.2</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <!-- 视频项5 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=5">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=8" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">开动！打开中国美食图鉴</h3>
-                                    <div class="video-meta">
-                                        <span>更新至8期</span>
-                                        <span>美食纪录片</span>
-                                    </div>
-                                </div>
-                            </a>
+                        <!-- 加载指示器 -->
+                        <div style="grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; height: 200px; color: #ff5f00; font-size: 16px;">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> 加载中...
                         </div>
                     </div>
                 </section>
                 
                 <!-- 推荐模块2 -->
                 <section class="recommend-section">
+                 
                     <div class="section-header">
-                        <h2 class="section-title">少儿频道</h2>
-                        <a href="channel3.html?type=少儿" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
+                        <h2 class="section-title">加载中...</h2>
+                        <a href="#" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
                     </div>
                     <div class="video-grid">
-                        <!-- 视频项6-10 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=6">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=9" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">儿童启蒙动画：认知世界</h3>
-                                    <div class="video-meta">
-                                        <span>适合3-6岁</span>
-                                        <span>共52集</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=7">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=10" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">幼儿英语启蒙儿歌</h3>
-                                    <div class="video-meta">
-                                        <span>更新至30期</span>
-                                        <span>英语学习</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=8">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=11" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">恐龙世界大冒险</h3>
-                                    <div class="video-meta">
-                                        <span>适合5-10岁</span>
-                                        <span>科普动画</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=9">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=12" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">宝宝巴士：好习惯养成</h3>
-                                    <div class="video-meta">
-                                        <span>更新至45期</span>
-                                        <span>习惯养成</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=10">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=13" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">亲子互动游戏合集</h3>
-                                    <div class="video-meta">
-                                        <span>家庭共看</span>
-                                        <span>互动教学</span>
-                                    </div>
-                                </div>
-                            </a>
+                        <!-- 加载指示器 -->
+                        <div style="grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; height: 200px; color: #ff5f00; font-size: 16px;">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> 加载中...
                         </div>
                     </div>
                 </section>
                 
                 <!-- 推荐模块3 -->
                 <section class="recommend-section">
+                  
                     <div class="section-header">
-                        <h2 class="section-title">纪录片频道</h2>
-                        <a href="channel3.html?type=纪录片" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
+                        <h2 class="section-title">加载中...</h2>
+                        <a href="#" class="section-more">查看更多 <i class="fas fa-angle-right"></i></a>
                     </div>
                     <div class="video-grid">
-                        <!-- 视频项11-15 -->
-                        <div class="video-item">
-                            <a href="player3.html?id=11">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=14" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">大国工匠：传统手艺传承</h3>
-                                    <div class="video-meta">
-                                        <span>共6集</span>
-                                        <span>文化传承</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=12">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=15" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">地球脉动：极地之旅</h3>
-                                    <div class="video-meta">
-                                        <span>自然纪录片</span>
-                                        <span>BBC制作</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=13">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=16" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">舌尖上的中国：风味人间</h3>
-                                    <div class="video-meta">
-                                        <span>美食纪录片</span>
-                                        <span>第4季</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=14">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=17" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">历史谜团：未解之谜</h3>
-                                    <div class="video-meta">
-                                        <span>考古发现</span>
-                                        <span>共8集</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        
-                        <div class="video-item">
-                            <a href="player3.html?id=15">
-                                <div class="video-thumb-container">
-                                    <img src="https://picsum.photos/400/225?random=18" alt="视频封面" class="video-thumb">
-                                </div>
-                                <div class="video-info">
-                                    <h3 class="video-title">宇宙探索：黑洞之谜</h3>
-                                    <div class="video-meta">
-                                        <span>天文科普</span>
-                                        <span>NASA合作</span>
-                                    </div>
-                                </div>
-                            </a>
+                        <!-- 加载指示器 -->
+                        <div style="grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; height: 200px; color: #ff5f00; font-size: 16px;">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> 加载中...
                         </div>
                     </div>
                 </section>
@@ -1194,14 +991,187 @@
             });
         }
         
+        // 创建并执行脚本
+        function executeScriptContent(scriptHtml, container) {
+            console.log('开始执行脚本内容:', scriptHtml);
+            
+            // 创建一个临时div来解析HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = scriptHtml;
+            
+            console.log('解析后的HTML:', tempDiv.innerHTML);
+            
+            // 先添加非script元素（如ins标签）
+            const nonScripts = tempDiv.querySelectorAll(':not(script)');
+            console.log('找到非script元素:', nonScripts.length);
+            nonScripts.forEach(element => {
+                const clonedElement = element.cloneNode(true);
+                container.appendChild(clonedElement);
+                console.log('添加元素:', clonedElement.tagName, clonedElement.className);
+                
+                // 如果是ins标签，设置display属性为block
+                if (clonedElement.tagName === 'INS') {
+                    clonedElement.style.display = 'block';
+                    clonedElement.style.width = '100%';
+                    clonedElement.style.height = '250px';
+                    console.log('设置ins标签样式:', clonedElement.style.cssText);
+                }
+            });
+            
+            // 查找所有script标签
+            const scripts = tempDiv.querySelectorAll('script');
+            console.log('找到script标签:', scripts.length);
+            
+            // 分离脚本：先加载外部脚本，再执行内联脚本
+            const externalScripts = [];
+            const inlineScripts = [];
+            
+            scripts.forEach(script => {
+                if (script.src) {
+                    externalScripts.push(script);
+                } else {
+                    inlineScripts.push(script);
+                }
+            });
+            
+            console.log('外部脚本数量:', externalScripts.length);
+            console.log('内联脚本数量:', inlineScripts.length);
+            
+            // 加载外部脚本
+            let loadedScripts = 0;
+            
+            if (externalScripts.length === 0) {
+                // 没有外部脚本，直接执行内联脚本
+                executeInlineScripts();
+            } else {
+                // 加载所有外部脚本
+                externalScripts.forEach(script => {
+                    console.log('加载外部脚本:', script.src);
+                    
+                    const newScript = document.createElement('script');
+                    
+                    // 复制所有属性，但移除async属性
+                    Array.from(script.attributes).forEach(attr => {
+                        if (attr.name !== 'async') {
+                            newScript.setAttribute(attr.name, attr.value);
+                            console.log(`  属性: ${attr.name} = ${attr.value}`);
+                        }
+                    });
+                    
+                    // 设置脚本加载完成后的回调
+                    newScript.onload = function() {
+                        console.log('外部脚本加载完成:', script.src);
+                        loadedScripts++;
+                        
+                        // 所有外部脚本都加载完成后，执行内联脚本
+                        if (loadedScripts === externalScripts.length) {
+                            executeInlineScripts();
+                        }
+                    };
+                    
+                    newScript.onerror = function() {
+                        console.error('外部脚本加载失败:', script.src);
+                        loadedScripts++;
+                        
+                        // 即使有脚本加载失败，也继续执行
+                        if (loadedScripts === externalScripts.length) {
+                            executeInlineScripts();
+                        }
+                    };
+                    
+                    // 添加到容器
+                    container.appendChild(newScript);
+                    console.log(`  已添加到容器`);
+                });
+            }
+            
+            // 执行内联脚本
+            function executeInlineScripts() {
+                console.log('开始执行内联脚本');
+                
+                inlineScripts.forEach((script, index) => {
+                    console.log(`处理第${index + 1}个内联脚本`);
+                    
+                    const newScript = document.createElement('script');
+                    
+                    // 复制所有属性
+                    Array.from(script.attributes).forEach(attr => {
+                        newScript.setAttribute(attr.name, attr.value);
+                        console.log(`  属性: ${attr.name} = ${attr.value}`);
+                    });
+                    
+                    // 复制内容
+                    newScript.textContent = script.textContent;
+                    console.log(`  内容长度: ${script.textContent.length}`);
+                    
+                    // 添加到容器
+                    container.appendChild(newScript);
+                    console.log(`  已添加到容器`);
+                });
+                
+                console.log('脚本执行完成');
+            }
+        }
+        
         // 显示广告
         function showAds(adData) {
-            // 显示播放器广告
-            if (adData && adData.player_ad && adData.player_ad.enabled && adData.player_ad.ad_format === 'script') {
-                const adContainer = document.createElement('div');
-                adContainer.className = 'ad-container';
-                adContainer.innerHTML = adData.player_ad.script_content || '';
-                document.body.appendChild(adContainer);
+            console.log('开始显示广告:', adData);
+            
+            // 显示首页广告1
+            const ad1Content = document.getElementById('ad1-content');
+            if (ad1Content && adData.ad1 && adData.ad1.enabled) {
+                console.log('找到广告1容器:', ad1Content);
+                console.log('广告1数据:', adData.ad1);
+                ad1Content.style.display = 'block';
+                console.log('广告1容器显示状态:', ad1Content.style.display);
+                
+                if (adData.ad1.ad_format === 'script' && adData.ad1.script_content) {
+                    console.log('使用脚本格式加载广告1');
+                    executeScriptContent(adData.ad1.script_content, ad1Content);
+                } else if (adData.ad1.image_url) {
+                    console.log('使用图片格式加载广告1:', adData.ad1.image_url);
+                    ad1Content.innerHTML = `<img src="${adData.ad1.image_url}" alt="广告1" style="width: 100%; height: auto;">`;
+                }
+            } else {
+                console.error('未找到广告1容器或广告未启用');
+            }
+            
+            // 显示首页广告2
+            const ad2Content = document.getElementById('ad2-content');
+            if (ad2Content && adData.ad2 && adData.ad2.enabled) {
+                console.log('找到广告2容器:', ad2Content);
+                console.log('广告2数据:', adData.ad2);
+                ad2Content.style.display = 'block';
+                console.log('广告2容器显示状态:', ad2Content.style.display);
+                
+                if (adData.ad2.ad_format === 'script' && adData.ad2.script_content) {
+                    console.log('使用脚本格式加载广告2');
+                    executeScriptContent(adData.ad2.script_content, ad2Content);
+                } else if (adData.ad2.image_url) {
+                    console.log('使用图片格式加载广告2:', adData.ad2.image_url);
+                    ad2Content.innerHTML = `<img src="${adData.ad2.image_url}" alt="广告2" style="width: 100%; height: auto;">`;
+                }
+            } else {
+                console.error('未找到广告2容器或广告未启用');
+            }
+            
+            // 显示首页广告3
+            const ad3Content = document.getElementById('ad3-content');
+            if (ad3Content && adData.ad3 && adData.ad3.enabled) {
+                console.log('找到广告3容器:', ad3Content);
+                console.log('广告3数据:', adData.ad3);
+                ad3Content.style.display = 'block';
+                console.log('广告3容器显示状态:', ad3Content.style.display);
+                
+                if (adData.ad3.ad_format === 'script' && adData.ad3.script_content) {
+                    console.log('使用脚本格式加载广告3');
+                    executeScriptContent(adData.ad3.script_content, ad3Content);
+                } else if (adData.ad3.image_url) {
+                    console.log('使用图片格式加载广告3:', adData.ad3.image_url);
+                    ad3Content.innerHTML = `<img src="${adData.ad3.image_url}" alt="广告3" style="width: 100%; height: auto;">`;
+                }
+            } else {
+                console.error('未找到广告3容器或广告未启用');
             }
         }
         
@@ -1213,6 +1183,9 @@
             fetch('assets/home_data.json')
                 .then(response => {
                     console.log('本地文件响应状态:', response.status);
+                    console.log('本地文件响应URL:', response.url);
+                    console.log('本地文件响应类型:', response.type);
+                    
                     if (!response.ok) {
                         throw new Error('Local network response was not ok');
                     }
@@ -1220,6 +1193,11 @@
                 })
                 .then(data => {
                     console.log('从本地文件加载数据成功:', data);
+                    console.log('广告数据:', {
+                        ad1: data.ad1,
+                        ad2: data.ad2,
+                        ad3: data.ad3
+                    });
                     
                     // 初始化轮播图
                     console.log('轮播图数据:', data.banner_slides || []);
@@ -1237,11 +1215,20 @@
                     console.log('模块数据:', data.sections || []);
                     updateModules(data.sections || []);
                     
-                    // 显示广告
-                    showAds(data);
+                    // 延迟加载广告，确保页面主要内容已显示
+                    setTimeout(() => {
+                        console.log('开始加载广告...');
+                        console.log('广告数据:', {
+                            ad1: data.ad1,
+                            ad2: data.ad2,
+                            ad3: data.ad3
+                        });
+                        showAds(data);
+                    }, 1000);
                 })
                 .catch(error => {
                     console.error('从本地文件加载数据失败:', error);
+                    console.error('错误堆栈:', error.stack);
                     // 显示默认内容
                     console.log('显示默认内容...');
                     initCarousel([]);
@@ -1253,20 +1240,94 @@
         
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 先加载header，然后再初始化数据
+            // 立即开始加载真实数据
+            loadHomeData();
+            
+            // 同时加载header
             fetch('header.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('header-placeholder').innerHTML = data;
-                    // 初始化轮播图和数据
-                    loadHomeData();
                 })
                 .catch(error => {
                     console.error('加载header失败:', error);
-                    // 即使header加载失败，也尝试初始化数据
-                    loadHomeData();
                 });
         });
     </script>
+
+    <!-- 安全措施脚本 -->
+    <script>
+        // 禁止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        // 禁止F12键
+        document.addEventListener('keydown', function(e) {
+            // F12键
+            if (e.keyCode === 123) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                e.preventDefault();
+            }
+            // Ctrl+Shift+J
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                e.preventDefault();
+            }
+            // Ctrl+U
+            if (e.ctrlKey && e.keyCode === 85) {
+                e.preventDefault();
+            }
+        });
+        
+        // 简单的加密函数
+        function encryptUrl(url) {
+            return btoa(encodeURIComponent(url));
+        }
+        
+        // 简单的解密函数
+        function decryptUrl(encryptedUrl) {
+            return decodeURIComponent(atob(encryptedUrl));
+        }
+        
+        // 检测爬取行为
+        function detectCrawling() {
+            // 检测请求频率
+            let requestCount = 0;
+            setInterval(function() {
+                if (requestCount > 50) {
+                    requestCount = 0;
+                }
+            }, 1000);
+            
+            // 重写fetch和XMLHttpRequest
+            const originalFetch = window.fetch;
+            window.fetch = function() {
+                requestCount++;
+                return originalFetch.apply(this, arguments);
+            };
+            
+            const originalXHR = window.XMLHttpRequest;
+            window.XMLHttpRequest = function() {
+                const xhr = new originalXHR();
+                const originalOpen = xhr.open;
+                xhr.open = function() {
+                    requestCount++;
+                    return originalOpen.apply(this, arguments);
+                };
+                return xhr;
+            };
+        }
+        
+        // 初始化安全措施
+        detectCrawling();
+    </script>
+    <script async data-id="101500720" src="//static.getclicky.com/js"></script>
 </body>
 </html>
