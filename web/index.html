@@ -826,6 +826,10 @@
                 const imageUrl = slide.poster || slide.image || '';
                 const slideTitle = slide.title || '视频标题';
                 const slideType = slide.type || '';
+                const videoUrl = slide.video_url || '';
+                // 使用data属性存储视频URL和标题
+                slideElement.dataset.videoUrl = videoUrl;
+                slideElement.dataset.slideTitle = slideTitle;
                 slideElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${imageUrl}')`;
                 slideElement.innerHTML = `
                     <div class="slide-content">
@@ -833,12 +837,14 @@
                         <p class="slide-desc">${slideType}</p>
                     </div>
                 `;
-                slideElement.addEventListener('click', () => {
-                    const videoUrl = slide.video_url || '';
-                    if (videoUrl) {
-                        window.location.href = `player.html?url=${btoa(encodeURIComponent(videoUrl))}&title=${btoa(encodeURIComponent(slideTitle))}`;
-                    }
-                });
+                // 点击事件处理，直接使用闭包捕获当前轮播项的数据
+                (function(currentSlideTitle, currentVideoUrl) {
+                    slideElement.addEventListener('click', function() {
+                        if (currentVideoUrl) {
+                            window.location.href = `player.html?url=${btoa(encodeURIComponent(currentVideoUrl))}&title=${btoa(encodeURIComponent(currentSlideTitle))}`;
+                        }
+                    });
+                })(slideTitle, videoUrl);
                 carousel.appendChild(slideElement);
             });
             
@@ -863,14 +869,27 @@
                 if (!slides[index] || !btns[index]) return;
                 slides.forEach((slide, i) => {
                     slide.classList.remove('active');
+                    // 禁用非激活轮播项的点击事件
+                    slide.style.pointerEvents = 'none';
                     if (btns[i]) {
                         btns[i].classList.remove('active');
                     }
                 });
                 slides[index].classList.add('active');
+                // 启用当前激活轮播项的点击事件
+                slides[index].style.pointerEvents = 'auto';
                 btns[index].classList.add('active');
                 currentSlide = index;
             }
+            
+            // 初始化时禁用所有非激活轮播项的点击事件
+            slides.forEach((slide, index) => {
+                if (index !== 0) {
+                    slide.style.pointerEvents = 'none';
+                } else {
+                    slide.style.pointerEvents = 'auto';
+                }
+            });
             
             // 自动轮播
             let slideInterval = setInterval(() => {
