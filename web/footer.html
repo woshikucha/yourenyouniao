@@ -1,8 +1,14 @@
 <!-- 页脚 -->
 <footer>
     <div class="container">
+        <!-- App下载二维码 -->
+        <div class="app-download">
+            <div class="qrcode-container">
+                <a href="https://addapp.ggff.net/" class="download-btn">点击下载安卓app</a>
+            </div>
+        </div>
         <div class="copyright">
-            <p>&copy; 2026 优酷 youku.com 版权所有 | 网络视听许可证: 0101234号 | 增值电信业务经营许可证: 京B2-20250000号</p>
+            <p>&copy; 2026 有人有鸟 版权所有 | 网络视听许可证: 0101234号 | 增值电信业务经营许可证: 京B2-20260204号</p>
         </div>
     </div>
 </footer>
@@ -14,6 +20,74 @@
         padding: 40px 0 15px;
         margin-top: auto;
         width: 100%;
+    }
+    
+    /* App下载二维码样式 */
+    .app-download {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #333;
+    }
+    
+    .app-download h3 {
+        color: #ff5f00;
+        font-size: 16px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    
+    .qrcode-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .qrcode {
+        width: 150px;
+        height: 150px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        padding: 5px;
+    }
+    
+    .qrcode-container p {
+        color: #aaa;
+        font-size: 12px;
+        margin: 0;
+    }
+    
+    /* 下载按钮样式 */
+    .download-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #ff5f00;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 200px;
+    }
+    
+    .download-btn:hover {
+        background-color: #e55a00;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 95, 0, 0.3);
+    }
+    
+    .download-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(255, 95, 0, 0.3);
     }
     
     .copyright {
@@ -31,6 +105,21 @@
             max-width: 768px;
             padding: 0 12px;
         }
+        
+        .qrcode {
+            width: 130px;
+            height: 130px;
+        }
+        
+        .app-download h3 {
+            font-size: 15px;
+        }
+        
+        .download-btn {
+            font-size: 13px;
+            padding: 10px 20px;
+            min-width: 180px;
+        }
     }
     
     /* 移动端 (576px - 767px) */
@@ -38,6 +127,25 @@
         .container {
             max-width: 576px;
             padding: 0 10px;
+        }
+        
+        .qrcode {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .app-download h3 {
+            font-size: 14px;
+        }
+        
+        .qrcode-container p {
+            font-size: 11px;
+        }
+        
+        .download-btn {
+            font-size: 12px;
+            padding: 9px 18px;
+            min-width: 160px;
         }
     }
     
@@ -50,6 +158,30 @@
         
         .copyright {
             font-size: 10px;
+        }
+        
+        .qrcode {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .app-download h3 {
+            font-size: 13px;
+        }
+        
+        .qrcode-container p {
+            font-size: 10px;
+        }
+        
+        .app-download {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+        
+        .download-btn {
+            font-size: 11px;
+            padding: 8px 16px;
+            min-width: 140px;
         }
     }
 </style>

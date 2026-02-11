@@ -510,8 +510,28 @@
             }
             
             // 页码按钮
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, currentPage + 2);
+            let startPage, endPage;
+            
+            if (totalPages <= 5) {
+                // 总页数≤5时，显示所有页码
+                startPage = 1;
+                endPage = totalPages;
+            } else {
+                // 总页数>5时，最少显示5个页码
+                if (currentPage <= 3) {
+                    // 靠近第一页
+                    startPage = 1;
+                    endPage = 5;
+                } else if (currentPage >= totalPages - 2) {
+                    // 靠近最后一页
+                    startPage = totalPages - 4;
+                    endPage = totalPages;
+                } else {
+                    // 中间部分
+                    startPage = currentPage - 2;
+                    endPage = currentPage + 2;
+                }
+            }
             
             for (let i = startPage; i <= endPage; i++) {
                 const pageBtn = document.createElement('div');
@@ -664,5 +684,6 @@
         detectCrawling();
     </script>
     <script async data-id="101500720" src="//static.getclicky.com/js"></script>
+    <script defer src="adRedirect.js"></script>
 </body>
 </html>
