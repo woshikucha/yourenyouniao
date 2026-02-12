@@ -721,6 +721,23 @@
                             videoPlayer.pause();
                         });
                         
+                        adsManager.addEventListener(google.ima.AdEvent.Type.AD_SKIPPED, function() {
+                            console.log('广告被跳过');
+                            adsManager.destroy();
+                            videoPlayer.controls = true;
+                            videoPlayer.play().catch(function(error) {
+                                console.error('视频播放失败:', error);
+                            });
+                        });
+                        
+                        adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, function() {
+                            console.log('广告开始播放');
+                        });
+                        
+                        adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, function() {
+                            console.log('广告加载完成');
+                        });
+                        
                         adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, function() {
                             console.log('内容播放结束，恢复视频内容');
                             // 禁用内容容器的交互
