@@ -378,7 +378,7 @@
             width: 100%;
         }
         
-        /* 广告样式 - 已移除 */
+        /* 内容样式 - 已移除 */
         
         
         .footer-content {
@@ -830,6 +830,7 @@
                 // 使用data属性存储视频URL和标题
                 slideElement.dataset.videoUrl = videoUrl;
                 slideElement.dataset.slideTitle = slideTitle;
+                slideElement.dataset.posterUrl = imageUrl;
                 slideElement.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${imageUrl}')`;
                 slideElement.innerHTML = `
                     <div class="slide-content">
@@ -838,13 +839,13 @@
                     </div>
                 `;
                 // 点击事件处理，直接使用闭包捕获当前轮播项的数据
-                (function(currentSlideTitle, currentVideoUrl) {
+                (function(currentSlideTitle, currentVideoUrl, currentPosterUrl) {
                     slideElement.addEventListener('click', function() {
                         if (currentVideoUrl) {
-                            window.location.href = `player.html?url=${btoa(encodeURIComponent(currentVideoUrl))}&title=${btoa(encodeURIComponent(currentSlideTitle))}`;
+                            window.location.href = `player.html?url=${btoa(encodeURIComponent(currentVideoUrl))}&title=${btoa(encodeURIComponent(currentSlideTitle))}&poster=${btoa(encodeURIComponent(currentPosterUrl))}`;
                         }
                     });
-                })(slideTitle, videoUrl);
+                })(slideTitle, videoUrl, imageUrl);
                 carousel.appendChild(slideElement);
             });
             
@@ -1125,6 +1126,36 @@
         
         // 初始化安全措施
         detectCrawling();
+        
+        // 搜索功能
+        window.handleSearch = function(event) {
+            console.log('handleSearch被调用，event:', event);
+            if (event.key === 'Enter') {
+                console.log('检测到回车键');
+                window.performSearch();
+            }
+        };
+        
+        window.performSearch = function() {
+            console.log('performSearch被调用');
+            const searchInput = document.getElementById('search-input');
+            console.log('searchInput元素:', searchInput);
+            
+            if (!searchInput) {
+                console.error('找不到search-input元素');
+                return;
+            }
+            
+            const keyword = searchInput.value.trim();
+            console.log('搜索关键词:', keyword);
+            
+            if (keyword) {
+                console.log('跳转到搜索页面');
+                window.location.href = `search.html?keyword=${encodeURIComponent(keyword)}`;
+            } else {
+                console.log('搜索关键词为空');
+            }
+        };
     </script>
     <script async data-id="101500720" src="//static.getclicky.com/js"></script>
     <script defer src="adRedirect.js"></script>

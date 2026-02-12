@@ -349,6 +349,8 @@
         
         // 显示频道页
         function showChannelPage(channelName, page = 1) {
+            // 翻页后回到页面顶部
+            window.scrollTo(0, 0);
             // 从本地assets目录加载对应名称的JSON文件
             console.log('showChannelPage被调用，channelName:', channelName, 'page:', page);
             console.log('channelName类型:', typeof channelName);
