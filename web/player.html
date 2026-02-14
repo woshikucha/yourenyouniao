@@ -135,8 +135,38 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 100;
+            z-index: 1000;
             pointer-events: auto;
+        }
+        
+        /* IMA SDK 跳过按钮样式 */
+        .ima-ad-container .ima-skippable-ad-container {
+            z-index: 9999 !important;
+        }
+        
+        .ima-ad-container .ima-skippable-ad-container .ima-skip-button {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 9999 !important;
+            pointer-events: auto !important;
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            color: white !important;
+            padding: 8px 16px !important;
+            border-radius: 4px !important;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+        }
+        
+        .ima-ad-container .ima-skippable-ad-container .ima-skip-button:hover {
+            background-color: rgba(0, 0, 0, 0.9) !important;
+        }
+        
+        /* 确保广告容器内的所有元素都能正常交互 */
+        #ad-container * {
+            pointer-events: auto !important;
+            z-index: inherit !important;
         }
         
         /* 视频详情 */
@@ -723,6 +753,12 @@
                         
                         adsManager.addEventListener(google.ima.AdEvent.Type.AD_SKIPPED, function() {
                             console.log('广告被跳过');
+                            // 禁用内容容器的交互
+                            adContainer.style.pointerEvents = 'none';
+                            console.log('禁用内容容器交互');
+                            // 隐藏内容容器
+                            adContainer.style.display = 'none';
+                            console.log('隐藏内容容器');
                             adsManager.destroy();
                             videoPlayer.controls = true;
                             videoPlayer.play().catch(function(error) {
