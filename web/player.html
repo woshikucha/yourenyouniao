@@ -126,9 +126,10 @@
             height: 100%;
             background-color: #000;
             object-fit: contain;
+            z-index: 2; /* 提升视频层级 */
         }
         
-        /* 内容容器 */
+        /* 内容容器 - 默认隐藏且不捕获事件 */
         #ad-container {
             position: absolute;
             top: 0;
@@ -136,7 +137,14 @@
             width: 100%;
             height: 100%;
             z-index: 1000;
-            pointer-events: auto;
+            pointer-events: none; /* 默认不捕获鼠标事件 */
+            display: none; /* 默认隐藏 */
+        }
+        
+        /* 广告播放时的样式 */
+        #ad-container.ad-active {
+            pointer-events: auto; /* 广告播放时捕获事件 */
+            display: block; /* 显示广告容器 */
         }
         
         /* IMA SDK 跳过按钮样式 */
@@ -164,7 +172,7 @@
         }
         
         /* 确保广告容器内的所有元素都能正常交互 */
-        #ad-container * {
+        #ad-container.ad-active * {
             pointer-events: auto !important;
             z-index: inherit !important;
         }
@@ -304,7 +312,8 @@
                     <source src="https://example.com/videos/sample.m3u8" type="application/x-mpegURL">
                     您的浏览器不支持视频播放
                 </video>
-                <div id="ad-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: auto;"></div>
+                <!-- 修改：默认隐藏广告容器，且不捕获事件 -->
+                <div id="ad-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none; display: none;"></div>
             </div>
         </div>
         
@@ -418,6 +427,7 @@
 
             // 设置视频源
             const videoPlayer = document.getElementById('video-player');
+            videoPlayer.controls = true; // 强制开启控件
 
             // 设置视频缩略图
             if (posterUrl) {
@@ -438,7 +448,6 @@
                         hls.attachMedia(videoPlayer);
                         hls.on(Hls.Events.MANIFEST_PARSED, function() {
                             console.log('视频加载成功，准备播放');
-                            // 设置控件可见
                             videoPlayer.controls = true;
                             // 尝试自动播放
                             videoPlayer.play().catch(function(error) {
@@ -488,9 +497,6 @@
                     });
                 }
             }
-            
-            // 确保视频控件可见
-            videoPlayer.controls = true;
         }
         
         // 初始化前贴片内容
@@ -499,6 +505,7 @@
             
             // 获取视频播放器
             const videoPlayer = document.getElementById('video-player');
+            const adContainer = document.getElementById('ad-container');
             
             // 检查视频播放器是否存在
             if (!videoPlayer) {
@@ -540,9 +547,6 @@
             console.log('google.ima对象:', google.ima);
             console.log('google.ima.AdsLoader:', google.ima.AdsLoader);
             console.log('google.ima.AdsRequest:', google.ima.AdsRequest);
-            
-            // 获取内容容器
-            const adContainer = document.getElementById('ad-container');
             
             if (!adContainer) {
                 console.error('内容容器不存在，直接播放视频');
@@ -612,13 +616,15 @@
             console.log('内容容器尺寸:', adContainer.offsetWidth + 'x' + adContainer.offsetHeight);
             
             try {
-                // 启用内容容器的交互
-                adContainer.style.pointerEvents = 'auto';
-                console.log('启用内容容器交互');
+                // 启用广告容器（添加active类）
+                adContainer.classList.add('ad-active');
+                console.log('启用广告容器交互');
                 
                 // 检查AdDisplayContainer是否存在
                 if (!google.ima.AdDisplayContainer) {
                     console.error('AdDisplayContainer不存在，直接播放视频');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
                     videoPlayer.controls = true;
                     videoPlayer.play().catch(function(error) {
                         console.error('视频播放失败:', error);
@@ -635,9 +641,9 @@
                     console.error('创建AdDisplayContainer失败:', containerError);
                     console.error('错误堆栈:', containerError.stack);
                     
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     
                     // 直接播放视频
                     videoPlayer.controls = true;
@@ -656,9 +662,9 @@
                     console.error('创建AdsLoader失败:', loaderError);
                     console.error('错误堆栈:', loaderError.stack);
                     
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     
                     // 直接播放视频
                     videoPlayer.controls = true;
@@ -672,9 +678,9 @@
                 if (!google.ima.AdsManagerLoadedEvent || !google.ima.AdErrorEvent) {
                     console.error('IMA SDK事件类型不存在，直接播放视频');
                     
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     
                     // 直接播放视频
                     videoPlayer.controls = true;
@@ -698,9 +704,9 @@
                         if (!google.ima.AdsRenderingSettings) {
                             console.error('AdsRenderingSettings不存在，直接播放视频');
                             
-                            // 禁用内容容器的交互
-                            adContainer.style.pointerEvents = 'none';
-                            console.log('禁用内容容器交互');
+                            // 禁用广告容器
+                            adContainer.classList.remove('ad-active');
+                            console.log('禁用广告容器交互');
                             
                             // 直接播放视频
                             videoPlayer.controls = true;
@@ -720,9 +726,9 @@
                         } catch (managerError) {
                             console.error('获取AdsManager失败:', managerError);
                             
-                            // 禁用内容容器的交互
-                            adContainer.style.pointerEvents = 'none';
-                            console.log('禁用内容容器交互');
+                            // 禁用广告容器
+                            adContainer.classList.remove('ad-active');
+                            console.log('禁用广告容器交互');
                             
                             // 直接播放视频
                             videoPlayer.controls = true;
@@ -735,9 +741,9 @@
                         // 监听内容事件
                         adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, function(adErrorEvent) {
                             console.error('内容错误:', adErrorEvent.getError());
-                            // 禁用内容容器的交互
-                            adContainer.style.pointerEvents = 'none';
-                            console.log('禁用内容容器交互');
+                            // 禁用广告容器
+                            adContainer.classList.remove('ad-active');
+                            console.log('禁用广告容器交互');
                             adsManager.destroy();
                             // 内容错误时直接播放视频
                             videoPlayer.controls = true;
@@ -753,12 +759,12 @@
                         
                         adsManager.addEventListener(google.ima.AdEvent.Type.AD_SKIPPED, function() {
                             console.log('广告被跳过');
-                            // 禁用内容容器的交互
-                            adContainer.style.pointerEvents = 'none';
-                            console.log('禁用内容容器交互');
-                            // 隐藏内容容器
+                            // 禁用广告容器
+                            adContainer.classList.remove('ad-active');
+                            console.log('禁用广告容器交互');
+                            // 隐藏广告容器
                             adContainer.style.display = 'none';
-                            console.log('隐藏内容容器');
+                            console.log('隐藏广告容器');
                             adsManager.destroy();
                             videoPlayer.controls = true;
                             videoPlayer.play().catch(function(error) {
@@ -776,9 +782,9 @@
                         
                         adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, function() {
                             console.log('内容播放结束，恢复视频内容');
-                            // 禁用内容容器的交互
-                            adContainer.style.pointerEvents = 'none';
-                            console.log('禁用内容容器交互');
+                            // 禁用广告容器
+                            adContainer.classList.remove('ad-active');
+                            console.log('禁用广告容器交互');
                             videoPlayer.controls = true;
                             videoPlayer.play().catch(function(error) {
                                 console.error('视频播放失败:', error);
@@ -800,9 +806,9 @@
                             if (!google.ima.ViewMode) {
                                 console.error('ViewMode不存在，直接播放视频');
                                 
-                                // 禁用内容容器的交互
-                                adContainer.style.pointerEvents = 'none';
-                                console.log('禁用内容容器交互');
+                                // 禁用广告容器
+                                adContainer.classList.remove('ad-active');
+                                console.log('禁用广告容器交互');
                                 
                                 adsManager.destroy();
                                 // 直接播放视频
@@ -820,8 +826,8 @@
                             console.error('内容初始化失败:', adError);
                             console.error('错误堆栈:', adError.stack);
                             // 内容初始化失败时直接播放视频
-                            adContainer.style.pointerEvents = 'none';
-                            console.log('禁用内容容器交互');
+                            adContainer.classList.remove('ad-active');
+                            console.log('禁用广告容器交互');
                             adsManager.destroy();
                             videoPlayer.controls = true;
                             videoPlayer.play().catch(function(error) {
@@ -832,9 +838,9 @@
                         console.error('处理内容加载完成事件失败:', eventError);
                         console.error('错误堆栈:', eventError.stack);
                         
-                        // 禁用内容容器的交互
-                        adContainer.style.pointerEvents = 'none';
-                        console.log('禁用内容容器交互');
+                        // 禁用广告容器
+                        adContainer.classList.remove('ad-active');
+                        console.log('禁用广告容器交互');
                         
                         // 直接播放视频
                         videoPlayer.controls = true;
@@ -847,9 +853,9 @@
                 // 监听内容加载错误事件
                 adsLoader.addEventListener(adErrorEvent.Type.AD_ERROR, function(adErrorEvent) {
                     console.error('内容加载错误:', adErrorEvent.getError());
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     // 内容加载错误时直接播放视频
                     videoPlayer.controls = true;
                     videoPlayer.play().catch(function(error) {
@@ -869,9 +875,9 @@
                     console.error('创建AdsRequest失败:', requestError);
                     console.error('错误堆栈:', requestError.stack);
                     
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     
                     // 直接播放视频
                     videoPlayer.controls = true;
@@ -903,9 +909,9 @@
                     console.error('AdDisplayContainer初始化失败:', initError);
                     console.error('错误堆栈:', initError.stack);
                     
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     
                     // 直接播放视频
                     videoPlayer.controls = true;
@@ -924,9 +930,9 @@
                     console.error('发送内容请求失败:', requestError);
                     console.error('错误堆栈:', requestError.stack);
                     
-                    // 禁用内容容器的交互
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    // 禁用广告容器
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                     
                     // 直接播放视频
                     videoPlayer.controls = true;
@@ -938,10 +944,10 @@
                 console.error('内容初始化过程中发生错误:', error);
                 console.error('错误堆栈:', error.stack);
                 
-                // 禁用内容容器的交互
+                // 禁用广告容器
                 if (adContainer) {
-                    adContainer.style.pointerEvents = 'none';
-                    console.log('禁用内容容器交互');
+                    adContainer.classList.remove('ad-active');
+                    console.log('禁用广告容器交互');
                 }
                 
                 // 内容初始化失败时直接播放视频
@@ -1091,6 +1097,7 @@
             // 添加视频播放器事件监听器
             const videoPlayer = document.getElementById('video-player');
             const videoWrapper = document.getElementById('video-wrapper');
+            const adContainer = document.getElementById('ad-container');
             
             // 延迟初始化内容 - 确保视频内容优先加载
             setTimeout(function() {
@@ -1108,51 +1115,44 @@
                 }, 500);
             });
             
-            // 视频播放时确保控件可见
+            // 视频相关事件 - 确保控件始终可见
             videoPlayer.addEventListener('play', function() {
                 console.log('视频开始播放');
                 videoPlayer.controls = true;
             });
             
-            // 视频暂停时确保控件可见
             videoPlayer.addEventListener('pause', function() {
                 console.log('视频暂停');
                 videoPlayer.controls = true;
             });
             
-            // 视频结束时确保控件可见
             videoPlayer.addEventListener('ended', function() {
                 console.log('视频结束');
                 videoPlayer.controls = true;
             });
             
-            // 视频加载时确保控件可见
             videoPlayer.addEventListener('loadedmetadata', function() {
                 console.log('视频元数据加载完成');
                 videoPlayer.controls = true;
             });
             
-            // 视频点击时确保控件可见
             videoPlayer.addEventListener('click', function() {
                 console.log('视频被点击');
                 videoPlayer.controls = true;
             });
             
-            // 鼠标悬停在视频上时显示控件
+            // 鼠标交互事件 - 移除隐藏控件的逻辑
             videoWrapper.addEventListener('mouseenter', function() {
                 console.log('鼠标悬停在视频上');
                 videoPlayer.controls = true;
             });
             
-            // 鼠标离开视频时隐藏控件（如果正在播放）
+            // 修改：移除鼠标离开时隐藏控件的逻辑
             videoWrapper.addEventListener('mouseleave', function() {
                 console.log('鼠标离开视频');
-                if (!videoPlayer.paused) {
-                    videoPlayer.controls = false;
-                }
+                videoPlayer.controls = true; // 始终保持控件可见
             });
             
-            // 鼠标在视频上移动时显示控件
             videoWrapper.addEventListener('mousemove', function() {
                 console.log('鼠标在视频上移动');
                 videoPlayer.controls = true;
