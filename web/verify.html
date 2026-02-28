@@ -172,7 +172,7 @@
             正在进行安全检查<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
         </p>
         
-        <button id="enter-btn" class="enter-btn" disabled>
+        <button id="enter-btn" class="enter-btn" onclick="enterSite()">
             立即进入 (3秒)
         </button>
         
@@ -188,7 +188,6 @@
     <script>
         let countdown = 3;
         let countdownInterval;
-        let canEnter = false;
         const enterBtn = document.getElementById('enter-btn');
         const countdownElement = document.getElementById('countdown');
         const progressFill = document.getElementById('progress-fill');
@@ -201,38 +200,28 @@
                 
                 if (countdown <= 0) {
                     clearInterval(countdownInterval);
-                    enableButton();
+                    // 倒计时结束，自动跳转
+                    enterSite();
                 }
             }, 1000);
         }
         
-        function enableButton() {
-            canEnter = true;
-            enterBtn.disabled = false;
-            enterBtn.textContent = '立即进入';
-            
-            // 添加点击事件监听器
-            enterBtn.addEventListener('click', function() {
-                if (canEnter) {
-                    enterSite();
-                }
-            });
-            
-            // 自动跳转
-            setTimeout(function() {
-                enterSite();
-            }, 500);
-        }
-        
         function enterSite() {
-            if (!canEnter) return;
-            
             clearInterval(countdownInterval);
             enterBtn.textContent = '正在跳转...';
             enterBtn.disabled = true;
+            enterBtn.onclick = null;
             
-            // 跳转到首页
-            window.location.href = 'index.html';
+            // 使用meta refresh跳转，不传递Referer
+            const meta = document.createElement('meta');
+            meta.httpEquiv = 'refresh';
+            meta.content = '0;url=index.html';
+            document.head.appendChild(meta);
+            
+            // 备用方案：直接跳转
+            setTimeout(function() {
+                window.location.replace('index.html');
+            }, 100);
         }
         
         // 页面加载后开始倒计时
