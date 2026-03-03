@@ -11,16 +11,18 @@
                 <nav class="nav-links">
                     <a href="index.html">首页</a>
                     <a href="channel.html?type=rmtj">热门推荐</a>
+					<a href="channel.html?type=zwzm">中文字幕</a>
+					<a href="channel.html?type=wbhl">网爆黑料</a>
                     <a href="channel.html?type=hrzq">黒人专区</a>
+					<a href="channel.html?type=zntj">主奴调教</a>
                     <a href="channel.html?type=avjs">AV解说</a>
                     <a href="channel.html?type=aimx">AI明星</a>
                     <a href="channel.html?type=rqcs">人妻初摄</a>
-                    <a href="channel.html?type=zwzm">中文字幕</a>
-                    <a href="channel.html?type=wbhl">网爆黑料</a>
                     <a href="channel.html?type=rbwm">日本无码</a>
                     <a href="channel.html?type=rbym">日本有码</a>
                     <a href="channel.html?type=rbtj">日本调教</a>
                     <a href="channel.html?type=gczq">国产专区</a>
+					<a href="channel.html?type=llsn">萝莉少女</a>
                     <a href="channel.html?type=cjjq">刺激剧情</a>
                     <a href="channel.html?type=omzq">欧美精品</a>
                     <a href="channel.html?type=xgrq">性感人妻</a>
@@ -30,15 +32,14 @@
                     <a href="channel.html?type=mgxl">漫改系列</a>
                     <a href="channel.html?type=rqsn">人妻熟女</a>
                     <a href="channel.html?type=gctp">国产偷拍</a>
-                    <a href="channel.html?type=jpzq">精品专区</a>
                     <a href="channel.html?type=omlp">欧美老片</a>
                     <a href="channel.html?type=wnxl">伪娘系列</a>
                     <a href="channel.html?type=zkll">重口乱伦</a>
                     <a href="channel.html?type=zkrs">重口人兽</a>
                 </nav>
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="搜索视频..." onkeypress="handleSearch(event)">
-                    <button onclick="performSearch()">
+                    <input type="text" id="search-input" placeholder="搜索视频..." onkeypress="if(event.key==='Enter'||event.keyCode===13){const keyword=this.value.trim();if(keyword)window.location.href='search.html?keyword='+encodeURIComponent(keyword);}">
+                    <button onclick="const searchInput=document.getElementById('search-input');const keyword=searchInput.value.trim();if(keyword)window.location.href='search.html?keyword='+encodeURIComponent(keyword);">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
